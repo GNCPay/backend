@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,17 +37,12 @@ namespace eWallet.Backend.Controllers
 
         public JsonResult JsonConfirmRequest(string request_id, string type, string note)
         {
-            dynamic request = Helper.DataHelper.Get("operation_request", Query.EQ("_id", request_id));
-            request.confirm = new Data.DynamicObj();
-            request.confirm.type = type;
-            request.confirm.note = note;
-            request.confirm.confirm_by = User.Identity.Name;
-            request.confirm.confirm_date = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
-            request.status = type;
+           
 
             //doan nay tuy tung the loai ma thuc hien
-
-            Helper.DataHelper.Save("operation_request", request);
+            string request_server = @"{system:'web_frontend', module:'transaction',type:'two_way',function:'operation_confirm',request:{user_id:'" + User.Identity.Name
+               + "',confirm_type:'" + type + "',confirm_note:'" + note + "', request_id:'" + request_id + "'}}";
+            dynamic result = JObject.Parse(Helper.RequestToServer(request_server));
 
             return Json(new {error_code="00",error_message="Success" },JsonRequestBehavior.AllowGet);
         }

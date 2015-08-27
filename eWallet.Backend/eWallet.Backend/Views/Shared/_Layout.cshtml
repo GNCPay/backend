@@ -20,45 +20,49 @@
                 </button>
                 @Html.ActionLink("eWallet Operation", "Index", "Home", null, new { @class = "navbar-brand" })
             </div>
+
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Customer Profile", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Finance Accounts", "Index", "FinanceAccount")</li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Operation <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>@Html.ActionLink("CashOut Request", "CashOutRequest", "Operation")</li>
-                            <li>@Html.ActionLink("CashIn Request", "CashInRequest", "Operation")</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Business Transactions <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>@Html.ActionLink("Today Transaction", "Today", "Transaction")</li>
-                            <li>@Html.ActionLink("Search Transaction", "Search", "Transaction")</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">System <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href='@Url.Action("Setting","FinanceAccount")'>Finance Account</a></li>
-                            @if (User.IsInRole("SysCoreAdmin"))
-                            {
-                                <li><a href='@Url.Action("Setting","Account")'>System Users</a></li>
-                            }
-                            <li class="divider"></li>
-                            <li><a href="#">Service Configruation</a></li>
-                            @if (User.IsInRole("SysCoreAdmin"))
-                            {
-                                <li><a href='@Url.Action("Setting","System")'>System Configuration</a></li>
-                            }
-                            <li class="divider"></li>
-                            <li><a href="#">Log</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                @if (Request.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Customer Profile", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Finance Accounts", "Index", "FinanceAccount")</li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Operation <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>@Html.ActionLink("CashOut Request", "CashOutRequest", "Operation")</li>
+                                <li>@Html.ActionLink("CashIn Request", "CashInRequest", "Operation")</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Business Transactions <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>@Html.ActionLink("Today Transaction", "Today", "Transaction")</li>
+                                <li>@Html.ActionLink("Search Transaction", "Search", "Transaction")</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">System <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href='@Url.Action("Setting","FinanceAccount")'>Finance Account</a></li>
+                                @if (User.IsInRole("SysCoreAdmin"))
+                                {
+                                    <li><a href='@Url.Action("Setting","Account")'>System Users</a></li>
+                                }
+                                <li class="divider"></li>
+                                <li><a href="#">Service Configruation</a></li>
+                                @if (User.IsInRole("SysCoreAdmin"))
+                                {
+                                    <li><a href='@Url.Action("Setting","System")'>System Configuration</a></li>
+                                }
+                                <li class="divider"></li>
+                                <li><a href="#">Log</a></li>
+                            </ul>
+                        </li>
+                    </ul>     }
                 @Html.Partial("_LoginPartial")
             </div>
+
         </div>
     </div>
     <div class="container body-content">

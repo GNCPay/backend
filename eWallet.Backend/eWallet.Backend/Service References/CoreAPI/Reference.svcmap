@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="df5de625-34bf-404f-ae1d-fb45407fa0e8" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://127.0.0.1:8000/ewallet_internet" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ChannelAPI.wsdl" MetadataType="Wsdl" ID="e2be3323-8a68-49be-9229-a17dcc9cbead" SourceId="1" SourceUrl="http://127.0.0.1:8000/ewallet_internet" />
+    <MetadataFile FileName="ewallet_internet.xsd" MetadataType="Schema" ID="0da25f95-e76f-48c0-a70e-34ef0df6c663" SourceId="1" SourceUrl="http://127.0.0.1:8000/ewallet_internet?xsd=xsd0" />
+    <MetadataFile FileName="ewallet_internet1.xsd" MetadataType="Schema" ID="4d6d2250-9187-4750-984f-b6d85fdc708e" SourceId="1" SourceUrl="http://127.0.0.1:8000/ewallet_internet?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
