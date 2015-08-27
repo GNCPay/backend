@@ -1,3 +1,28 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Profile";
 }
+<div class="row">
+    <ul class="breadcrumb page-header">
+        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
+        <li><a href='#'>@ViewBag.Title</a></li>
+    </ul>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="list-group">
+            <a href="#" class="list-group-item" data-href='@Url.Action("ListProfile", "Profile", null, null)'>
+                List Profile
+            </a>
+        </div>
+    </div>
+    <div id="main_content" class="col-sm-9">
+
+    </div>
+</div>
+<script>
+    $('.list-group-item').click(function () {
+        $(this).parent().find(".list-group-item").removeClass("active");
+        $(this).addClass("active");
+        loadPage($(this).data("href"));
+    });
+</script>
