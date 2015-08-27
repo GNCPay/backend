@@ -52,6 +52,9 @@
     <Reference Include="eWallet.Data">
       <HintPath>..\..\..\lib\eWallet.Data.dll</HintPath>
     </Reference>
+    <Reference Include="eWallet.SMS">
+      <HintPath>..\..\..\lib\eWallet.SMS.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -283,6 +286,7 @@
     <Content Include="Views\Shared\_Detail.cshtml" />
     <Content Include="Views\Report\Detail.cshtml" />
     <Content Include="Views\Operation\CashInRequest.cshtml" />
+    <Content Include="Views\Box\CustomerProfile_ListProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
