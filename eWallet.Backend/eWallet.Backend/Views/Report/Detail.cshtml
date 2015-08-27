@@ -1,0 +1,11 @@
+﻿@model eWallet.Data.DynamicObj
+<div class="row">
+    <ul class="breadcrumb page-header">
+        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
+        <li><a href='#'>@ViewBag.Title</a></li>
+    </ul>
+</div>
+<div class="row">
+    @Html.Partial("_Detail", Model)
+</div>
+

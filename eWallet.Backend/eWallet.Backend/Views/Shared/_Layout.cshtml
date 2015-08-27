@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - eWallet Administration System</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquerypag")
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("eWallet Operation", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Customer Profile", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Finance Accounts", "Index", "FinanceAccount")</li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Operation <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("CashOut Request", "CashOutRequest", "Operation")</li>
+                            <li>@Html.ActionLink("CashIn Request", "CashInRequest", "Operation")</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Business Transactions <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("Today Transaction", "Today", "Transaction")</li>
+                            <li>@Html.ActionLink("Search Transaction", "Search", "Transaction")</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">System <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href='@Url.Action("Setting","FinanceAccount")'>Finance Account</a></li>
+                            @if (User.IsInRole("SysCoreAdmin"))
+                            {
+                                <li><a href='@Url.Action("Setting","Account")'>System Users</a></li>
+                            }
+                            <li class="divider"></li>
+                            <li><a href="#">Service Configruation</a></li>
+                            @if (User.IsInRole("SysCoreAdmin"))
+                            {
+                                <li><a href='@Url.Action("Setting","System")'>System Configuration</a></li>
+                            }
+                            <li class="divider"></li>
+                            <li><a href="#">Log</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - eWallet Administration System</p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        function loadPage(href) {
+            $("#main_content").html('');
+            $("#main_content").load(href, function (response, status, xhr) {
+                if (status == "error") {
+                    var msg = "Sorry but there was an error: ";
+                    alert(msg + xhr.status + " " + xhr.statusText);
+                }
+            });
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+<h3>Core Channel API</h3>
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Service Port</th>
+            <th>Listen Host</th>
+            <th>Currency</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (dynamic chn in ViewBag.list_channels)
+        {
+            <tr>
+                <td>@chn._id</td>
+                <td>@chn.description</td>
+                <td>@chn.service_port</td>
+                <td>@chn.listener_host</td>
+                <td>@chn.currency</td>
+                <td>@chn.status</td>
+                <td>
+                    <a title="Cập nhật" href="#"><i class="glyphicon glyphicon-edit"> </i></a>
+                    <a title="Xóa" href="#"><i class="glyphicon glyphicon-remove"> </i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

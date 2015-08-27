@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+}
+<h3>Chart Of Accounts</h3>
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Account Name</th>
+            <th>Type</th>
+            <th>Parent</th>
+            <th>Sub Accounts</th>
+        </tr>
+    </thead>
+    <tbody id="table_body">
+    </tbody>
+</table>
+<ul class="pagination">
+    <li>Prev</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #c</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Next</li>
+</ul>
+
+<script>
+    $(document).ready(function () {
+
+        loadPage(0);
+
+        function loadPage(page) {
+            $.ajax({
+                url: '@Url.Action("JsonListChartOfAccounts", "FinanceAccount")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { page: page, page_size: 20 },
+                timeout: 30000
+            })
+               .success(function (result) {
+                   if (page == 0) {
+                       $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                           perpage: 20, // show 10 elements per page
+                           lapping: 0, // don't overlap pages for the moment
+                           page: 1, // start at page, can also be "null" or negative
+                           onSelect: function (next_page) {
+                               loadPage(next_page);
+                           }
+                       });
+                   }
+                   $('#table_body').html('');
+                   $.each(result.list, function (i, val) {
+                       $strChild = '';
+                       if (val.child_id) {
+                           $.each(val.child_id, function (i, ch) {
+                               $strChild = $strChild + " <strong>" + ch + "</strong>";
+                           })
+                       };
+                       $strRow = "<tr>"
+                       + "<td>" + val._id + "</td>"
+                       + "<td>" + val.name + "</td>"
+                       + "<td>" + val.type + "</td>"
+                       + "<td>" + val.parent + "</td>"
+                       + "<td>" + $strChild + "</td>"
+                       + "</tr>";
+                       $('#table_body').append($strRow);
+                   });
+               })
+               .error(function (xhr, status) {
+                   NProgress.done();
+                   alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+               });
+        }
+    })
+</script>

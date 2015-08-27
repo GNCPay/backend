@@ -1,0 +1,78 @@
+﻿@{
+    Layout = null;
+}
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Profile</th>
+            <th>Currently Balance</th>
+            <th>Avaiable Balance</th>
+            <th>Created Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="table_body">
+        
+    </tbody>
+</table>
+
+<ul class="pagination">
+    <li>Prev</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #c</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Next</li>
+</ul>
+
+<script>
+    $(document).ready(function () {
+
+        loadPage(0);
+        
+        function loadPage(page) {
+            $.ajax({
+                url: '@Url.Action("JsonListAccounts", "FinanceAccount")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { profile: null, status: '', created_date_from: null, created_date_to: null, page: page, page_size: 20 },
+                timeout: 30000
+            })
+               .success(function (result) {
+                   if (page == 0) {
+                       $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                           perpage: 20, // show 10 elements per page
+                           lapping: 0, // don't overlap pages for the moment
+                           page: 1, // start at page, can also be "null" or negative
+                           onSelect: function (next_page) {
+                               loadPage(next_page);
+                           }
+                       });
+                   }
+                   $('#table_body').html('');
+                   $.each(result.list, function (i, val) {
+                       $strRow = "<tr>"
+                       + "<td><a href='FinanceAccount/ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td>" + val.name + "</td>"
+                       + "<td>" + val.profile + "</td>"
+                       + "<td>" + val.balance + "</td>"
+                       + "<td>" + val.available_balance + "</td>"
+                       + "<td>" + val.system_created_time + "</td>"
+                       + "<td>" + val.status + "</td>"
+                       + "</tr>";
+                       $('#table_body').append($strRow);
+                   });
+               })
+               .error(function (xhr, status) {
+                   NProgress.done();
+                   alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+               });
+        }
+    })
+</script>

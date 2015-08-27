@@ -1,0 +1,42 @@
+﻿@model eWallet.Data.DynamicObj
+<div class="row">
+    <div class="form-horizontal col-lg-12">
+        @{
+            var dictionary = Model.dictionary;
+
+            foreach (string key in dictionary.Keys)
+            {
+                var value = dictionary[key];
+                if (value is eWallet.Data.DynamicObj)
+                {
+                    <div class="col-lg-11 right" >
+                        <hr />
+                        <h3>@key</h3>
+                        @Html.Partial("_Detail", (eWallet.Data.DynamicObj)value)
+                        <hr />
+                    </div>
+                }
+                else if(value is Array)
+                {
+                    <div class="col-lg-6">
+                        <label for="transaction_id" class="col-lg-5">@key.ToUpper()</label>
+                        <div class="col-lg-7">
+                            @foreach (var item in (Array)value) { 
+                                <strong>@item </strong>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-lg-6">
+                        <label for="transaction_id" class="col-lg-5">@key.ToUpper()</label>
+                        <div class="col-lg-7">
+                            @value
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

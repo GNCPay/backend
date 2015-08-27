@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "CashIn Request";
+}
+<div class="row">
+    <ul class="breadcrumb page-header">
+        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
+        <li><a href='#'>@ViewBag.Title</a></li>
+    </ul>
+</div>
+<div class="row">
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Business Transaction</th>
+                <th>Created Time</th>
+                <th>Profile</th>
+                <th>Channel</th>
+                <th>Sender</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="table_body"></tbody>
+    </table>
+
+    <ul class="pagination">
+        <li>Prev</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #c</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Next</li>
+    </ul>
+</div>
+<div id="confirmModal" class="modal fade">
+    <div id="bank-overlay" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Process Request</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="request_id" hidden />
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="confirm-type" class="col-sm-3 control-label">Confirm Type</label>
+                        <div class="col-sm-9">
+                            <select id="confirm-type" class="form-control">
+                                <option value="COMPLETED">Completed</option>
+                                <option value="REJECTED">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-note" class="col-sm-3 control-label">Confirm Notes</label>
+                        <div class="col-sm-9">
+                            <textarea id="confirm-note" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <button type="button" id="btn-confirm" class="btn btn-primary">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        loadPage(0);
+        $('#btn-confirm').click(function () {
+            $.ajax({
+                url: '@Url.Action("JsonConfirmRequest", "Operation")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { request_id: $('#request_id').val(), type:$('#confirm-type').val(), note:$('#confirm-note').val()},
+                timeout: 30000
+            })
+               .success(function (result) {
+                   alert(result.error_message);
+                   $('#confirmModal').modal('hide');
+                   location.reload();
+               })
+        .error(function (xhr, status) {
+            NProgress.done();
+            alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+        });
+        });
+        function loadPage(page) {
+            $.ajax({
+                url: '@Url.Action("JsonListCashInRequest", "Operation")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { profile: null, status: '', created_date_from: null, created_date_to: null, page: page, page_size: 20 },
+                timeout: 30000
+            })
+               .success(function (result) {
+                   if (page == 0) {
+                       $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                           perpage: 20, // show 10 elements per page
+                           lapping: 0, // don't overlap pages for the moment
+                           page: 1, // start at page, can also be "null" or negative
+                           onSelect: function (next_page) {
+                               loadPage(next_page);
+                           }
+                       });
+                   }
+                   $('#table_body').html('');
+                   $.each(result.list, function (i, val) {
+                       $sender = val.sender;
+                       $action = "";
+                       if (val.status == "NEW") {
+                           $action = "<a href='#confirmModal' data-toggle='modal'  class='confirm-btn btn btn-sm btn-primary' data-request='" + val._id + "'>Confirm</a>";
+                       }
+                       else {
+                           $action = "<strong>DONE</strong>";
+                       }
+                       $strRow = "<tr>"
+                       + "<td><a href='CashInRequest/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td>" + val.business_transaction + "</td>"
+                       + "<td>" + val.system_created_time + "</td>"
+                       + "<td>" + val.profile + "</td>"
+                       + "<td>" + val.channel + "</td>"
+                       + "<td>" + $sender.account_bank + ", " + $sender.account_number + "<br/>" + $sender.transfer_date + "<br/>" + val.note + "</td>"
+                       + "<td>" + val.amount + "</td>"
+                       + "<td>" + val.status + "</td>"
+                       + "<td>" +
+                           $action
+                       + "</td>"
+                       + "</tr>";
+                       $('#table_body').append($strRow);
+                   });
+
+                   $('.confirm-btn').click(function () {
+                       $('#request_id').val($(this).data("request"));
+
+                   })
+               })
+        .error(function (xhr, status) {
+            NProgress.done();
+            alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+        });
+        }
+    })
+</script>

@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "Today Transactions";
+}
+<div class="row">
+    <ul class="breadcrumb page-header">
+        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
+        <li><a href='#'>@ViewBag.Title</a></li>
+    </ul>
+</div>
+<div class="row">
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Created Time</th>
+                <th>Profile</th>
+                <th>Type</th>
+                <th>Channel</th>
+                <th>Service</th>
+                <th>Service Provider</th>
+                <th>Payment Provider</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="table_body"></tbody>
+    </table>
+
+    <ul class="pagination">
+        <li>Prev</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #c</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Next</li>
+    </ul>
+
+
+</div>
+<script>
+    $(document).ready(function () {
+
+        loadPage(0);
+
+        function loadPage(page) {
+            $.ajax({
+                url: '@Url.Action("JsonListTodayTransactions", "Transaction")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { profile: null, status: '', created_date_from: null, created_date_to: null, page: page, page_size: 20 },
+                timeout: 30000
+            })
+               .success(function (result) {
+                   if (page == 0) {
+                       $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                           perpage: 20, // show 10 elements per page
+                           lapping: 0, // don't overlap pages for the moment
+                           page: 1, // start at page, can also be "null" or negative
+                           onSelect: function (next_page) {
+                               loadPage(next_page);
+                           }
+                       });
+                   }
+                   $('#table_body').html('');
+                   $.each(result.list, function (i, val) {
+                       $strRow = "<tr>"
+                       + "<td><a href='Index/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td>" + val.system_created_time + "</td>"
+                       + "<td>" + val.created_by + "</td>"
+                       + "<td>" + val.transaction_type + "</td>"
+                       + "<td>" + val.channel + "</td>"
+                       + "<td>" + val.service + "</td>"
+                       + "<td>" + val.provider + "</td>"
+                       + "<td>" + val.payment_provider + "</td>"
+                       + "<td>" + val.amount + "</td>"
+                       + "<td>" + val.status + "</td>"
+                       + "</tr>";
+                       $('#table_body').append($strRow);
+                   });
+               })
+               .error(function (xhr, status) {
+                   NProgress.done();
+                   alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+               });
+        }
+    })
+</script>
