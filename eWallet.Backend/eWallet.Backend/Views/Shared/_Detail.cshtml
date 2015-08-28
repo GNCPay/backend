@@ -3,7 +3,6 @@
     <div class="form-horizontal col-lg-12">
         @{
             var dictionary = Model.dictionary;
-
             foreach (string key in dictionary.Keys)
             {
                 var value = dictionary[key];
@@ -14,6 +13,7 @@
                         <h3>@key</h3>
                         @Html.Partial("_Detail", (eWallet.Data.DynamicObj)value)
                         <hr />
+                        
                     </div>
                 }
                 else if(value is Array)

@@ -1,0 +1,78 @@
+﻿﻿@{
+    Layout = null;
+}
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Tài khoản</th>
+            <th>Họ Tên</th>
+            <th>SDT</th>
+            <th>Địa Chỉ</th>
+            <th>Số CMND</th>
+            <th>Ngày Cấp</th>
+            <th>Trạng Thái</th>
+        </tr>
+    </thead>
+    <tbody id="table_body"></tbody>
+</table>
+
+<ul class="pagination">
+    <li>Prev</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #c</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Next</li>
+</ul>
+
+<script>
+    $(document).ready(function () {
+
+        loadPage(0);
+
+        function loadPage(page) {
+            $.ajax({
+                url: '@Url.Action("JsonResult", "Profile")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { id: null, address: '', mobile:'', page: page, page_size: 20 },
+                timeout: 30000
+            })
+               .success(function (result) {
+                   if (page == 0) {
+                       $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                           perpage: 20, // show 10 elements per page
+                           lapping: 0, // don't overlap pages for the moment
+                           page: 1, // start at page, can also be "null" or negative
+                           onSelect: function (next_page) {
+                               loadPage(next_page);
+                           }
+                       });
+                   }
+                   $('#table_body').html('');
+                   $.each(result.list, function (i, val) {
+                       $strRow = "<tr>"
+                       + "<td><a href='Profile/JsonSearch/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td>" + val.user_name + "</td>"
+                       + "<td>" + val.full_name + "</td>"
+                       + "<td>" + val.mobile + "</td>"
+                       + "<td>" + val.address + "</td>"
+                       + "<td>" + val.personal_id + "</td>"
+                       + "<td>" + val.personal_id_issued_date + "</td>"
+                       + "<td>" + val.status + "</td>"
+                       + "</tr>";
+                       $('#table_body').append($strRow);
+                   });
+               })
+               .error(function (xhr, status) {
+                   NProgress.done();
+                   alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+               });
+        }
+    })
+</script>

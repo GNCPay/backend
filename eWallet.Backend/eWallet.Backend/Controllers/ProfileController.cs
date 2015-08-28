@@ -24,6 +24,50 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
 
+        public ActionResult JsonSearch(string keyword)
+        {
+            keyword = "1523900004";
+            eWallet.Data.DynamicObj transaction = (eWallet.Data.DynamicObj)Helper.DataHelper.Get("profile", Query.EQ("_id", long.Parse(keyword)));
+            ViewBag.Title = "Chi tiết Result";
+            return View("~/Views/Report/Detail.cshtml", transaction);
+        }
+
+        public JsonResult JsonResult(int? keyword,string address, string mobile, int? page, int? page_size)
+        {
+            keyword = 1524000001;
+            IMongoQuery query = Query.NE("type", "P");
+            if (keyword != null)
+                query = Query.And(
+                    query,
+                 Query.EQ("_id", keyword)
+                 );
+            dynamic profile = Helper.DataHelper.Get("profile", query);
+              if (page == null) page = 1;
+            if (page_size == null) page_size = 25;
+            long total_page = 0;
+            var _list = Helper.DataHelper.ListPagging("profile",
+                query,
+                SortBy.Ascending("_id"),
+                (int)page_size,
+                (int)page,
+                out total_page
+                );
+            var list_accounts = (from e in _list select e).Select(p => new
+            {
+                _id = p._id,
+                user_name = p.user_name,
+                full_name = p.full_name,
+                mobile = p.mobile,
+                address = p.address,
+                personal_id = p.personal_id,
+                personal_id_issued_date = p.personal_id_issued_date,
+                personal_id_issued_by = p.personal_id_issued_by,
+                system_created_date = p.system_created_date,
+                status = p.status
+            }).ToArray();
+            return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult JsonListProfile(int? id, string status, string user_name, string full_name, string mobile, string address, string personal_id, DateTime? personal_id_issued_date, string personal_id_issued_by, DateTime? system_created_date, int? page, int? page_size)
         {
             IMongoQuery query = Query.NE("type", "P");
@@ -130,6 +174,11 @@ namespace eWallet.Backend.Controllers
         public ActionResult ListProfile()
         {
             return View("~/Views/Box/CustomerProfile_ListProfile.cshtml");
+        }
+
+        public ActionResult ResultProfile()
+        {
+            return View("~/Views/Box/ResultProfile.cshtml");
         }
     }
 }
