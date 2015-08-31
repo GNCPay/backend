@@ -24,51 +24,74 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
 
-        public ActionResult JsonSearch(string keyword)
-        {
-            keyword = "1523900004";
-            eWallet.Data.DynamicObj transaction = (eWallet.Data.DynamicObj)Helper.DataHelper.Get("profile", Query.EQ("_id", long.Parse(keyword)));
-            ViewBag.Title = "Chi tiết Result";
-            return View("~/Views/Report/Detail.cshtml", transaction);
-        }
+        //public ActionResult JsonSearch(string keyword)
+        //{
+        //    keyword = "1523900004";
+        //    eWallet.Data.DynamicObj transaction = (eWallet.Data.DynamicObj)Helper.DataHelper.Get("profile", Query.EQ("_id", long.Parse(keyword)));
+        //    ViewBag.Title = "Chi tiết Result";
+        //    return View("~/Views/Report/Detail.cshtml", transaction);
+        //}
 
-        public JsonResult JsonResult(int? keyword,string address, string mobile, int? page, int? page_size)
+        public JsonResult JsonResult(int? _Id,string User_name, string Full_Name,string Personal_Id, string mobile,string status, int? page, int? page_size)
         {
-            keyword = 1524000001;
             IMongoQuery query = Query.NE("type", "P");
-            if (keyword != null)
+            if (_Id != null)
                 query = Query.And(
                     query,
-                 Query.EQ("_id", keyword)
+                 Query.EQ("_id", _Id)
                  );
-            dynamic profile = Helper.DataHelper.Get("profile", query);
-              if (page == null) page = 1;
-            if (page_size == null) page_size = 25;
-            long total_page = 0;
-            var _list = Helper.DataHelper.ListPagging("profile",
-                query,
-                SortBy.Ascending("_id"),
-                (int)page_size,
-                (int)page,
-                out total_page
-                );
-            var list_accounts = (from e in _list select e).Select(p => new
-            {
-                _id = p._id,
-                user_name = p.user_name,
-                full_name = p.full_name,
-                mobile = p.mobile,
-                address = p.address,
-                personal_id = p.personal_id,
-                personal_id_issued_date = p.personal_id_issued_date,
-                personal_id_issued_by = p.personal_id_issued_by,
-                system_created_date = p.system_created_date,
-                status = p.status
-            }).ToArray();
-            return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
+            if (!String.IsNullOrEmpty(status))
+                query = Query.And(
+                    query,
+                    Query.EQ("status", status)
+                    );
+            if (!String.IsNullOrEmpty(mobile))
+                query = Query.And(
+                    query,
+                    Query.EQ("mobile", mobile)
+                    );
+            if (!String.IsNullOrEmpty(User_name))
+                query = Query.And(
+                    query,
+                    Query.EQ("user_name", User_name)
+                    );
+            if (!String.IsNullOrEmpty(Full_Name))
+                query = Query.And(
+                    query,
+                    Query.EQ("full_name", Full_Name)
+                    );
+            if (!String.IsNullOrEmpty(Personal_Id))
+                query = Query.And(
+                    query,
+                    Query.EQ("personal_id", Personal_Id)
+                    );
+                if (page == null) page = 1;
+                if (page_size == null) page_size = 25;
+         long total_page = 0;
+         var _list = Helper.DataHelper.ListPagging("profile",
+             query,
+             SortBy.Ascending("_id"),
+             (int)page_size,
+             (int)page,
+             out total_page
+             );
+         var list_accounts = (from e in _list select e).Select(p => new
+         {
+             _id = p._id,
+             user_name = p.user_name,
+             full_name = p.full_name,
+             mobile = p.mobile,
+             address = p.address,
+             personal_id = p.personal_id,
+             personal_id_issued_date = p.personal_id_issued_date,
+             personal_id_issued_by = p.personal_id_issued_by,
+             system_created_date = p.system_created_date,
+             status = p.status
+         }).ToArray();
+         return Json(new { total = total_page, list = list_accounts, error_message = "o_0" }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult JsonListProfile(int? id, string status, string user_name, string full_name, string mobile, string address, string personal_id, DateTime? personal_id_issued_date, string personal_id_issued_by, DateTime? system_created_date, int? page, int? page_size)
+        public JsonResult JsonListProfile(int? id, string status, string user_name, string full_name, string mobile,string personal_id, int? page, int? page_size)
         {
             IMongoQuery query = Query.NE("type", "P");
             if (id != null)
@@ -96,30 +119,10 @@ namespace eWallet.Backend.Controllers
                     query,
                     Query.EQ("full_name", full_name)
                     );
-            if (address != null)
-                query = Query.And(
-                    query,
-                    Query.EQ("address", address)
-                    );
             if (personal_id != null)
                 query = Query.And(
                     query,
                     Query.EQ("personal_id", personal_id)
-                    );
-            if (personal_id_issued_date != null)
-                query = Query.And(
-                    query,
-                    Query.GTE("personal_id_issued_date", ((DateTime)personal_id_issued_date).ToString("yyyyMMddHHmmss"))
-                    );
-            if (personal_id_issued_by != null)
-                query = Query.And(
-                    query,
-                    Query.EQ("personal_id_issued_by", personal_id_issued_by)
-                    );
-            if (system_created_date != null)
-                query = Query.And(
-                    query,
-                    Query.GTE("system_created_date", ((DateTime)system_created_date).ToString("yyyyMMddHHmmss"))
                     );
             if (page == null) page = 1;
             if (page_size == null) page_size = 25;
@@ -137,11 +140,7 @@ namespace eWallet.Backend.Controllers
                 user_name = p.user_name,
                 full_name = p.full_name,
                 mobile = p.mobile,
-                address=p.address,
                 personal_id=p.personal_id,
-                personal_id_issued_date=p.personal_id_issued_date,
-                personal_id_issued_by=p.personal_id_issued_by,
-                system_created_date=p.system_created_date,
                 status = p.status
             }).ToArray();
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
