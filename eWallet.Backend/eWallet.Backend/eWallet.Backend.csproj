@@ -303,7 +303,6 @@
     <None Include="Service References\CoreAPI\ewallet_internet1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Views\Box\ResultProfile.cshtml" />
     <Content Include="Views\Box\CustomerProfile_ListProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -1,23 +1,63 @@
 ﻿@{
     Layout = null;
 }
-<table class="table table-striped table-hover ">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Profile</th>
-            <th>Currently Balance</th>
-            <th>Avaiable Balance</th>
-            <th>Created Time</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody id="table_body">
-        
-    </tbody>
-</table>
+<style>
+    .filterable {
+        /*margin-top: 15px;*/
+    }
 
+        .filterable .panel-heading .pull-right {
+            margin-top: -20px;
+        }
+
+        .filterable .filters input[disabled] {
+            background-color: transparent;
+            border: none;
+            cursor: auto;
+            box-shadow: none;
+            padding: 0;
+            height: auto;
+        }
+
+            .filterable .filters input[disabled]::-webkit-input-placeholder {
+                color: #333;
+            }
+
+            .filterable .filters input[disabled]::-moz-placeholder {
+                color: #333;
+            }
+
+            .filterable .filters input[disabled]:-ms-input-placeholder {
+                color: #333;
+            }
+</style>
+<div>
+    <div class="row">
+        <div class="panel panel-primary filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title">Users</h3>
+                <div class="pull-right">
+                    <button class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr class="filters">
+                        <th><input id="_id" type="text" class="form-control" placeholder="#" disabled></th>
+                        <th><input id="name" type="text" class="form-control" placeholder="Name" disabled></th>
+                        <th><input id="profile" type="text" class="form-control" placeholder="Profile" disabled></th>
+                        <th><input id="system_created_time" type="text" class="form-control" placeholder="Created Time" disabled></th>
+                        <th><input id="status" type="text" class="form-control" placeholder="Status" disabled></th>
+                        <th><a href="#" id="SEARCH" class="form-control">Tìm</a></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<table class="table table-striped table-hover ">
+    <tbody id="table_body"></tbody>
+</table>
 <ul class="pagination">
     <li>Prev</li>
     <li>Page #n</li>
@@ -29,6 +69,103 @@
     <li>Page #n</li>
     <li>Next</li>
 </ul>
+
+<script>
+    $(document).ready(function () {
+        $('.filterable .btn-filter').click(function () {
+            var $panel = $(this).parents('.filterable'),
+            $filters = $panel.find('.filters input'),
+            $tbody = $panel.find('.table tbody');
+            if ($filters.prop('disabled') == true) {
+                $filters.prop('disabled', false);
+                $filters.first().focus();
+            } else {
+                $filters.val('').prop('disabled', true);
+                $tbody.find('.no-result').remove();
+                $tbody.find('tr').show();
+            }
+        });
+
+        $('.filterable .filters input').keyup(function (e) {
+            /* Ignore tab key */
+            var code = e.keyCode || e.which;
+            if (code == '9') return;
+            /* Useful DOM data and selectors */
+            var $input = $(this),
+            inputContent = $input.val().toLowerCase(),
+            $panel = $input.parents('.filterable'),
+            column = $panel.find('.filters th').index($input.parents('th')),
+            $table = $panel.find('.table'),
+            $rows = $table.find('tbody tr');
+            /* Dirtiest filter function ever ;) */
+            var $filteredRows = $rows.filter(function () {
+                var value = $(this).find('td').eq(column).text().toLowerCase();
+                return value.indexOf(inputContent) === -1;
+            });
+            /* Clean previous no-result if exist */
+            $table.find('tbody .no-result').remove();
+            /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+            $rows.show();
+            $filteredRows.hide();
+            /* Prepend no-result row if all rows are filtered */
+            if ($filteredRows.length === $rows.length) {
+                $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="' + $table.find('.filters th').length + '">No result found</td></tr>'));
+            }
+        });
+    });
+</script>
+
+@*tim thong tin*@
+<script>
+    $('#SEARCH').click(function () {
+        //alert('Clicked');
+        $name = $('#name').val();
+        $profile = $('#profile').val();
+        $system_created_time = $('#system_created_time').val();
+        $status = $('#status').val();
+        $_id = $('#_id').val();
+        var page;
+
+        $.ajax({
+            url: '@Url.Action("JsonResultFA", "FinanceAccount")',
+            contentType: 'application/json; charset=utf-8',
+            type: 'GET',
+            dataType: 'json',
+            data: { _id: $_id, name: $name, profile: $profile, system_created_time: $system_created_time, status: $status, page: page, page_size: 20 },
+            timeout: 30000
+        })
+           .success(function (result) {
+               if (page == 0) {
+                   $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                       perpage: 20, // show 10 elements per page
+                       lapping: 0, // don't overlap pages for the moment
+                       page: 1, // start at page, can also be "null" or negative
+                       onSelect: function (next_page) {
+                           loadPage(next_page);
+                       }
+                   });
+               }
+               $('#table_body').html('');
+               $.each(result.list, function (i, val) {
+                   $strRow = "<tr>"
+                   + "<td><a href='FinanceAccount/ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
+                   + "<td>" + val.name + "</td>"
+                   + "<td>" + val.profile + "</td>"
+                   + "<td>" + val.system_created_time + "</td>"
+                   + "<td>" + val.status + "</td>"
+                   + "</tr>";
+                   $('#table_body').append($strRow);
+               });
+           })
+           .error(function (xhr, status) {
+               NProgress.done();
+               alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+           });
+
+    })
+</script>
+
+
 
 <script>
     $(document).ready(function () {
@@ -61,8 +198,6 @@
                        + "<td><a href='FinanceAccount/ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
                        + "<td>" + val.name + "</td>"
                        + "<td>" + val.profile + "</td>"
-                       + "<td>" + val.balance + "</td>"
-                       + "<td>" + val.available_balance + "</td>"
                        + "<td>" + val.system_created_time + "</td>"
                        + "<td>" + val.status + "</td>"
                        + "</tr>";

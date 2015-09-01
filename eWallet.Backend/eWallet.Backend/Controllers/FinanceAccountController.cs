@@ -56,10 +56,58 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Box/FinanceAccount_ListAccounts.cshtml");
         }
 
+        public JsonResult JsonResultFA(long? _id, string name, int? profile, string system_created_time, string status, int? page, int? page_size)
+        {
+            IMongoQuery query = Query.NE("type", "P");
+            if (_id!=null)
+                query = Query.And(
+                    query,
+                 Query.EQ("_id", _id)
+                 );
+            if (!String.IsNullOrEmpty(name))
+                query = Query.And(
+                    query,
+                    Query.EQ("name", name)
+                    );
+            if (profile!=null)
+                query = Query.And(
+                    query,
+                    Query.EQ("profile", profile)
+                    );
+            if (!string.IsNullOrEmpty(system_created_time))
+                query = Query.And(
+                    query,
+                    Query.EQ("system_created_time", system_created_time)
+                    );
+            if (!String.IsNullOrEmpty(status))
+                query = Query.And(
+                    query,
+                    Query.EQ("status", status)
+                    );
+            if (page == null) page = 1;
+            if (page_size == null) page_size = 25;
+            long total_page = 0;
+            var _list = Helper.DataHelper.ListPagging("finance_account",
+                query,
+                SortBy.Ascending("_id"),
+                (int)page_size,
+                (int)page,
+                out total_page
+                );
+            var list_accounts = (from e in _list select e).Select(p => new
+            {
+                _id = p._id,
+                name = p.name,
+                profile = p.profile,
+                system_created_time = p.system_created_time,
+                status = p.status
+            }).ToArray();
+            return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult JsonListAccounts(int? profile, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
-            IMongoQuery query = Query.NE("type","P");
-            if (profile != null) 
+            IMongoQuery query = Query.NE("type", "P");
+            if (profile != null)
                 query = Query.And(
                     query,
                  Query.EQ("profile", profile)
@@ -69,7 +117,7 @@ namespace eWallet.Backend.Controllers
                     query,
                     Query.EQ("status", status)
                     );
-            if(created_date_from != null)
+            if (created_date_from != null)
                 query = Query.And(
                     query,
                     Query.GTE("system_created_time", ((DateTime)created_date_from).ToString("yyyyMMddHHmmss"))
@@ -89,11 +137,17 @@ namespace eWallet.Backend.Controllers
                 (int)page,
                 out total_page
                 );
-            var list_accounts = (from e in _list select e).Select(p=>new {_id = p._id, name = p.name, profile = p.profile, 
-                balance = p.balance, available_balance = p.available_balance,
-                system_created_time = p.system_created_time, status = p.status
+            var list_accounts = (from e in _list select e).Select(p => new
+            {
+                _id = p._id,
+                name = p.name,
+                profile = p.profile,
+                balance = p.balance,
+                available_balance = p.available_balance,
+                system_created_time = p.system_created_time,
+                status = p.status
             }).ToArray();
-            return Json(new {total = total_page, list = list_accounts},JsonRequestBehavior.AllowGet);
+            return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult JsonListChartOfAccounts(int? page, int? page_size)
