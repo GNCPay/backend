@@ -180,6 +180,72 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Box/FinanceAccount_ListTransactions.cshtml");
         }
 
+        public JsonResult JsonResultTS(string _id, string system_created_time, string business_transaction,string channel, string service,string provider, string type, string status, int? page, int? page_size )
+        {
+            IMongoQuery query = null;
+            if (!string.IsNullOrEmpty(_id))
+                query = (query == null) ? Query.EQ("_id", _id) : Query.And(
+                       query,
+                       Query.EQ("_id", _id)
+                       );
+            if (!string.IsNullOrEmpty(system_created_time))
+                query = (query == null) ? Query.EQ("system_created_time", system_created_time) : Query.And(
+                    query,
+                    Query.EQ("system_created_time", system_created_time)
+                    );
+            if (!String.IsNullOrEmpty(business_transaction))
+                query = (query == null) ? Query.EQ("business_transaction", business_transaction) : Query.And(
+                    query,
+                    Query.EQ("business_transaction", business_transaction)
+                    );
+            if (!String.IsNullOrEmpty(channel))
+                query = (query == null) ? Query.EQ("channel", channel) : Query.And(
+                    query,
+                    Query.EQ("channel", channel)
+                    );
+            if (!String.IsNullOrEmpty(service))
+                query = (query == null) ? Query.EQ("service", service) : Query.And(
+                    query,
+                    Query.EQ("service", service)
+                    );
+            if (!String.IsNullOrEmpty(provider))
+                query = (query == null) ? Query.EQ("provider", provider) : Query.And(
+                    query,
+                    Query.EQ("provider", provider)
+                    );
+            if (!String.IsNullOrEmpty(type))
+                query = (query == null) ? Query.EQ("transaction", type.ToLower()) : Query.And(
+                    query,
+                    Query.EQ("transaction", type.ToLower())
+                    );
+            if (!String.IsNullOrEmpty(status))
+                query = (query == null) ? Query.EQ("status", status) : Query.And(
+                    query,
+                    Query.EQ("status", status)
+                    );
+            if (page == null) page = 1;
+            if (page_size == null) page_size = 25;
+            long total_page = 0;
+            var _list = Helper.DataHelper.ListPagging("finance_transaction",
+                query,
+                SortBy.Ascending("_id"),
+                (int)page_size,
+                (int)page,
+                out total_page
+                );
+            var list_transactions = (from e in _list select e).Select(p => new
+            {
+                _id = p._id,
+                business_transaction = p.business_transaction,
+                channel = p.channel,
+                service = p.service,
+                provider = p.provider,
+                type = p.transaction.ToUpper(),
+                system_created_time = p.system_created_time,
+                status = p.status
+            }).ToArray();
+            return Json(new { total = total_page, list = list_transactions }, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult JsonListTransactions(string business_transaction,string channel, string service, string provider, string type, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
             IMongoQuery query = null;
@@ -241,7 +307,6 @@ namespace eWallet.Backend.Controllers
                 service = p.service,
                 provider = p.provider,
                 type = p.transaction.ToUpper(),
-                amount = p.amount,
                 system_created_time = p.system_created_time,
                 status = p.status
             }).ToArray();
