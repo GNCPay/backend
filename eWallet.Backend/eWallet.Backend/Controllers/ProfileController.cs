@@ -32,7 +32,7 @@ namespace eWallet.Backend.Controllers
         //    return View("~/Views/Report/Detail.cshtml", transaction);
         //}
 
-        public JsonResult JsonResult(int? _Id,string User_name, string Full_Name,string Personal_Id, string mobile,string status, int? page, int? page_size)
+        public JsonResult JsonResult(int? _Id, string User_name, string Full_Name,string Personal_Id, string mobile,string status, int? page, int? page_size)
         {
             IMongoQuery query = Query.NE("type", "P");
             if (_Id != null)
@@ -97,8 +97,9 @@ namespace eWallet.Backend.Controllers
             if (id != null)
                 query = Query.And(
                     query,
-                 Query.EQ("_id", id)
+                 Query.EQ("_id", id)  
                  );
+            
             if (!String.IsNullOrEmpty(status))
                 query = Query.And(
                     query,

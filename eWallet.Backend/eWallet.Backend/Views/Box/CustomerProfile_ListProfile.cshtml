@@ -128,8 +128,9 @@
         $Personal_Id = $('#Personal_Id').val();
         $status = $('#status').val();
         $_Id = $('#_id').val();
+       
         var page;
-        
+
             $.ajax({
                 url: '@Url.Action("JsonResult", "Profile")',
                 contentType: 'application/json; charset=utf-8',
@@ -151,8 +152,11 @@
                    }
                    $('#table_body').html('');
                    $.each(result.list, function (i, val) {
+                       //noi chuoi
+                       var x = val._id.toString();
+                       var id2 = x.substring(0, 4) + "x" + x.substring(4);
                        $strRow = "<tr>"
-                       + "<td><a href='Profile/ViewProfile/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td><a href='Profile/ViewProfile/" + val._id + "'>" + id2+ "</a></td>"
                        + "<td>" + val.user_name + "</td>"
                        + "<td>" + val.full_name + "</td>"
                        + "<td>" + val.mobile + "</td>"
@@ -197,8 +201,11 @@
                    }
                    $('#table_body').html('');
                    $.each(result.list, function (i, val) {
+                       //noi chuoi
+                       var x = val._id.toString();
+                       var id2 = x.substring(0, 4) + "x" + x.substring(4);
                        $strRow = "<tr>"
-                       + "<td><a href='Profile/ViewProfile/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td><a href='Profile/ViewProfile/" + val._id + "'>" +id2+ "</a></td>"
                        + "<td>" + val.user_name + "</td>"
                        + "<td>" + val.full_name + "</td>"
                        + "<td>" + val.mobile + "</td>"
