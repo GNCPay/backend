@@ -11,6 +11,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using eWallet.Backend.Models;
 using MongoDB.AspNet.Identity;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Bson;
+using System.Collections;
 
 namespace eWallet.Backend.Controllers
 {
@@ -28,6 +32,60 @@ namespace eWallet.Backend.Controllers
             //List Channel Here
             ViewBag.list_users = Helper.DataHelper.List("users", null);
             return View("~/Views/Box/Account_ProfileManagement.cshtml");
+        }
+
+        public JsonResult UpdateStatus(string _id, string Status)
+        {
+            var id = new ObjectId(_id);
+            dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
+            user.Status = Status;
+            Helper.DataHelper.Save("users", user);
+            return Json(new { error_code = "00", error_message = "cập nhật trạng thái thành công !" }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult UpdateRoles(string _id, string[] Roles)
+        {
+            var id = new ObjectId(_id);
+            dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
+            user.Roles = Roles;
+            Helper.DataHelper.SaveUpdate("users", user);
+            return Json(new { error_code = "00", error_message = "cập nhật phân quyền thành công!" }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult RolesResult(Int64? _id, string UserName, string Roles, int? page, int? page_size)
+        {
+            IMongoQuery query = null;
+            if (_id!=null)
+                query = (query == null) ? Query.EQ("users", _id) : Query.And(
+                    query,
+                    Query.EQ("users", _id)
+                    );
+            if (!String.IsNullOrEmpty(UserName))
+                query = (query == null) ? Query.EQ("users", UserName) : Query.And(
+                    query,
+                    Query.EQ("users", UserName)
+                    );
+            if (!String.IsNullOrEmpty(Roles))
+                query = (query == null) ? Query.EQ("users", Roles) : Query.And(
+                    query,
+                    Query.EQ("users", Roles)
+                    );
+            if (page == null) page = 1;
+            if (page_size == null) page_size = 25;
+            long total_page = 0;
+            var _list = Helper.DataHelper.ListPagging("users",
+                query,
+                SortBy.Descending("_id"),
+                (int)page_size,
+                (int)page,
+                out total_page
+                );
+            var list_accounts = (from e in _list select e).Select(p => new
+            {
+                _id=p._id.ToString(),
+                UserName = p.UserName,
+                Roles = p.Roles,
+                Status = p.Status
+            }).ToArray();
+            return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize(Roles = "SysCoreAdmin")]
