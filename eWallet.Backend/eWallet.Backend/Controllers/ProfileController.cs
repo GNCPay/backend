@@ -93,7 +93,7 @@ namespace eWallet.Backend.Controllers
 
         public JsonResult JsonListProfile(int? id, string status, string user_name, string full_name, string mobile,string personal_id, int? page, int? page_size)
         {
-            IMongoQuery query = Query.NE("type", "P");
+            IMongoQuery query = null;
             if (id != null)
                 query = Query.And(
                     query,

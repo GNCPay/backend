@@ -34,12 +34,20 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Box/Account_ProfileManagement.cshtml");
         }
 
+        public JsonResult UpdateOrganization(string _id, string Organization_code)
+        {
+            var id = new ObjectId(_id);
+            dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
+            user.Organization_code = Organization_code;
+            Helper.DataHelper.SaveUpdate("users", user);
+            return Json(new { error_code = "00", error_message = "Cập nhật Organization_code thành công !" }, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult UpdateStatus(string _id, string Status)
         {
             var id = new ObjectId(_id);
             dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
             user.Status = Status;
-            Helper.DataHelper.Save("users", user);
+            Helper.DataHelper.SaveUpdate("users", user);
             return Json(new { error_code = "00", error_message = "cập nhật trạng thái thành công !" }, JsonRequestBehavior.AllowGet);
         }
         public JsonResult UpdateRoles(string _id, string[] Roles)
@@ -50,7 +58,7 @@ namespace eWallet.Backend.Controllers
             Helper.DataHelper.SaveUpdate("users", user);
             return Json(new { error_code = "00", error_message = "cập nhật phân quyền thành công!" }, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult RolesResult(Int64? _id, string UserName, string Roles, int? page, int? page_size)
+        public JsonResult RolesResult(Int64? _id, string UserName, string Roles, string Organization_code, int? page, int? page_size)
         {
             IMongoQuery query = null;
             if (_id!=null)
@@ -83,6 +91,7 @@ namespace eWallet.Backend.Controllers
                 _id=p._id.ToString(),
                 UserName = p.UserName,
                 Roles = p.Roles,
+                Organization_code=p.Organization_code,
                 Status = p.Status
             }).ToArray();
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
@@ -127,20 +136,26 @@ namespace eWallet.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            dynamic profile = Helper.DataHelper.Get("users", Query.EQ("UserName", model.UserName));
+            if (profile.Status != "lock")
             {
-                var user = await UserManager.FindAsync(model.UserName, model.Password);
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Invalid username or password.");
+                    var user = await UserManager.FindAsync(model.UserName, model.Password);
+                    if (user != null)
+                    {
+                        await SignInAsync(user, model.RememberMe);
+                        return RedirectToLocal(returnUrl);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Invalid username or password.");
+                    }
                 }
             }
-
+            else
+            ModelState.AddModelError("", "tài khoản của bạn đang bị khóa vui lòng liên hệ admin để được hỗ trợ !");
+           
             // If we got this far, something failed, redisplay form
             return View(model);
         }
