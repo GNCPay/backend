@@ -226,6 +226,7 @@
     <Content Include="Content\_variables.scss" />
     <Content Include="Content\bootswatch.less" />
     <Content Include="Content\variables.less" />
+    <Content Include="logo.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\ewallet_paging.js" />

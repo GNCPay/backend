@@ -1,4 +1,8 @@
 ﻿using MongoDB.AspNet.Identity;
+using System.Web.Mvc;
+using System.Web;
+using System.Web.Security;
+using MongoDB.Driver.Builders;
 
 namespace eWallet.Backend.Models
 {
@@ -6,9 +10,8 @@ namespace eWallet.Backend.Models
     public class ApplicationUser : IdentityUser
     {
        public string Status { get; set; }
-       public string Organization_code { get; set; }
     }
-
+    
     //public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     //{
     //    public ApplicationDbContext()

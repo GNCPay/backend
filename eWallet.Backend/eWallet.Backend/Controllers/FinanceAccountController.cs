@@ -12,6 +12,7 @@ namespace eWallet.Backend.Controllers
     {
         //
         // GET: /FinanceAccount/
+       [Authorize(Roles = "SysCoreAdmin")]
         public ActionResult Index()
         {
             return View();

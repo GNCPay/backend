@@ -1,10 +1,13 @@
-﻿using MongoDB.Driver;
+﻿using eWallet.Backend.Models;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+
 
 namespace eWallet.Backend.Controllers
 {
@@ -18,11 +21,12 @@ namespace eWallet.Backend.Controllers
             ViewBag.Title = "Chi tiết giao dịch";
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
-
-        public ActionResult Search()
+       
+       public ActionResult Search()
         {
             return View();
         }
+        
         public ActionResult Today()
         {
             return View();
@@ -76,10 +80,10 @@ namespace eWallet.Backend.Controllers
                     );
             }
 
-            if (!string.IsNullOrEmpty(profile))
-                query = (query == null) ? Query.EQ("created_by", profile) : Query.And(
+            if (!string.IsNullOrEmpty(User.Identity.Name.ToString()))
+                query = (query == null) ? Query.EQ("created_by", User.Identity.Name.ToString()) : Query.And(
                     query,
-                    Query.EQ("created_by", profile)
+                    Query.EQ("created_by", User.Identity.Name.ToString())
                     );
             if (!String.IsNullOrEmpty(status))
                 query = (query == null) ? Query.EQ("status", status) : Query.And(
@@ -122,28 +126,28 @@ namespace eWallet.Backend.Controllers
         }
         public JsonResult JsonListTransactions(int? profile, string today, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
-            IMongoQuery query = null;
+            IMongoQuery query = Query.EQ("created_by", User.Identity.Name.ToString());
    
-            if (profile != null)
-                query = (query == null) ? Query.EQ("created_by", profile) : Query.And(
-                    query,
-                    Query.EQ("created_by", profile)
-                    );
-            if (!String.IsNullOrEmpty(status))
-                query = (query == null) ? Query.EQ("status", status) : Query.And(
-                    query,
-                    Query.EQ("status", status)
-                    );
-            if (created_date_from != null)
-                query = Query.And(
-                    query,
-                    Query.GTE("system_created_time", ((DateTime)created_date_from).ToString("yyyyMMddHHmmss"))
-                    );
-            if (created_date_to != null)
-                query = Query.And(
-                    query,
-                    Query.LTE("system_created_time", ((DateTime)created_date_to).ToString("yyyyMMddHHmmss"))
-                    );
+            //if (profile != null)
+            //    query = (query == null) ? Query.EQ("created_by", profile) : Query.And(
+            //        query,
+            //        Query.EQ("created_by", profile)
+            //        );
+            //if (!String.IsNullOrEmpty(status))
+            //    query = (query == null) ? Query.EQ("status", status) : Query.And(
+            //        query,
+            //        Query.EQ("status", status)
+            //        );
+            //if (created_date_from != null)
+            //    query = Query.And(
+            //        query,
+            //        Query.GTE("system_created_time", ((DateTime)created_date_from).ToString("yyyyMMddHHmmss"))
+            //        );
+            //if (created_date_to != null)
+            //    query = Query.And(
+            //        query,
+            //        Query.LTE("system_created_time", ((DateTime)created_date_to).ToString("yyyyMMddHHmmss"))
+            //        );
 
             if (page == null) page = 1;
             if (page_size == null) page_size = 25;
@@ -173,17 +177,23 @@ namespace eWallet.Backend.Controllers
 
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult JsonListTodayTransactions(int? profile,string today, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
+        public JsonResult JsonListTodayTransactions(int? profile,string today,string userName, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
             IMongoQuery query = Query.NE("type", "P");
             today = System.DateTime.Now.ToString("yyyyMMdd");
+            userName = User.Identity.Name.ToString();
 
             if (today != null)
                 query = Query.And(
                     query,
                  Query.EQ("system_created_date", today)
                  );
-          
+
+            if (!string.IsNullOrEmpty(userName))
+                query = Query.And(
+                    query,
+                    Query.EQ("created_by", userName)
+                    );
             //if (profile != null)
             //    query = (query == null) ? Query.EQ("created_by", profile) : Query.And(
             //        query,

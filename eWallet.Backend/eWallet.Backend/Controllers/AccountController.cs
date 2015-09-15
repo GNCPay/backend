@@ -18,14 +18,16 @@ using System.Collections;
 
 namespace eWallet.Backend.Controllers
 {
+
     [Authorize]
     public class AccountController : Controller
     {
-        [Authorize]
+               
         public ActionResult Setting()
         {
             return View();
         }
+
         [Authorize(Roles = "SysCoreAdmin")]
         public ActionResult AccountManagement()
         {
@@ -34,14 +36,14 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Box/Account_ProfileManagement.cshtml");
         }
 
-        public JsonResult UpdateOrganization(string _id, string Organization_code)
-        {
-            var id = new ObjectId(_id);
-            dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
-            user.Organization_code = Organization_code;
-            Helper.DataHelper.SaveUpdate("users", user);
-            return Json(new { error_code = "00", error_message = "Cập nhật Organization_code thành công !" }, JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult UpdateOrganization(string _id, string Organization_code)
+        //{
+        //    var id = new ObjectId(_id);
+        //    dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
+        //    user.Organization_code = Organization_code;
+        //    Helper.DataHelper.SaveUpdate("users", user);
+        //    return Json(new { error_code = "00", error_message = "Cập nhật Organization_code thành công !" }, JsonRequestBehavior.AllowGet);
+        //}
         public JsonResult UpdateStatus(string _id, string Status)
         {
             var id = new ObjectId(_id);
@@ -91,7 +93,7 @@ namespace eWallet.Backend.Controllers
                 _id=p._id.ToString(),
                 UserName = p.UserName,
                 Roles = p.Roles,
-                Organization_code=p.Organization_code,
+                //Organization_code=p.Organization_code,
                 Status = p.Status
             }).ToArray();
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);

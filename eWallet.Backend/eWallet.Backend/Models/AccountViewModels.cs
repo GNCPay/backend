@@ -1,8 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Security;
+
 
 namespace eWallet.Backend.Models
 {
-    public class ExternalLoginConfirmationViewModel
+
+   public class ExternalLoginConfirmationViewModel
     {
         [Required]
         [Display(Name = "User name")]

@@ -10,15 +10,18 @@ namespace eWallet.Backend.Controllers
 {
     public class BillinginfoController : Controller
     {
+        
         // GET: Billinginfo
+        [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
         public ActionResult Index()
         {
             return View();
-        }
+        }      
         public ActionResult ListBillinginfo()
         {
             return View("~/Views/Box/Billing_info.cshtml");
         }
+
         public ActionResult ViewBillinginfo(string Id)
         {
             eWallet.Data.DynamicObj transaction = (eWallet.Data.DynamicObj)Helper.DataHelper.Get("billing_info", Query.EQ("_id", long.Parse(Id)));
