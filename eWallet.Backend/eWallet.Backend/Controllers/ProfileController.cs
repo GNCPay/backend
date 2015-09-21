@@ -12,12 +12,6 @@ namespace eWallet.Backend.Controllers
     {
         //
         // GET: /Profile/
-        [Authorize(Roles = "SysCoreAdmin")]
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         public ActionResult ViewProfile(string Id)
         {
             eWallet.Data.DynamicObj transaction = (eWallet.Data.DynamicObj)Helper.DataHelper.Get("profile", Query.EQ("_id",long.Parse(Id)));
@@ -176,6 +170,7 @@ namespace eWallet.Backend.Controllers
         //{
         //    return View("~/Views/Box/CustomerProfile_ListProfile.cshtml");
         //}
+        [Authorize(Roles = "SysCoreAdmin")]
         public ActionResult CustomerProfile_ListProfile()
         {
             return View("~/Views/Profile/CustomerProfile_ListProfile.cshtml");

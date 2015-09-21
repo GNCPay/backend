@@ -21,12 +21,12 @@ namespace eWallet.Backend.Controllers
             ViewBag.Title = "Chi tiết giao dịch";
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
-       
-       public ActionResult Search()
+        [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
+        public ActionResult Search()
         {
             return View();
         }
-        
+        [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
         public ActionResult Today()
         {
             return View();
