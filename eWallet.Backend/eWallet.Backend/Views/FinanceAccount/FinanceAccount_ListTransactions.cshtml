@@ -1,6 +1,12 @@
 ﻿@{
-    Layout = null;
+    ViewBag.Title = "List Account Transaction";
 }
+<div class="row">
+    <ul class="breadcrumb page-header">
+        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
+        <li><a href='#'>@ViewBag.Title</a></li>
+    </ul>
+</div>
 <style>
     .row2 {
         margin-left: -15px;
@@ -8,10 +14,10 @@
         width: 1105px;
         height: auto;
     }
+
     .filterable {
         /*margin-top: 15px;*/
-        margin-left:150px;
-        width:1040px;
+        width: 1170px;
     }
 
         .filterable .panel-heading .pull-right {
@@ -29,6 +35,7 @@
 
             .filterable .filters input[disabled]::-webkit-input-placeholder {
                 color: #333;
+                text-align:center;
             }
 
             .filterable .filters input[disabled]::-moz-placeholder {
@@ -66,7 +73,7 @@
         </div>
     </div>
 </div>
-<table class="table table-striped table-hover " style="width:960px;font-size:14px; text-align:left; margin-left:135px">
+<table class="table table-striped table-hover " style="width:1090px;font-size:14px; text-align:left;">
     <tbody id="table_body"></tbody>
 </table>
 
@@ -163,7 +170,7 @@
                $('#table_body').html('');
                $.each(result.list, function (i, val) {
                    $strRow = "<tr>"
-                   + "<td><a href='FinanceAccount/ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
+                   + "<td><a href='ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
                    + "<td>" + val.system_created_time + "</td>"
                    + "<td>" + val.business_transaction + "</td>"
                    + "<td>" + val.channel + "</td>"
@@ -211,7 +218,7 @@
                    $('#table_body').html('');
                    $.each(result.list, function (i, val) {
                        $strRow = "<tr>"
-                       + "<td><a href='FinanceAccount/ViewTransaction/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td><a href='ViewTransaction/" + val._id + "'>" + val._id + "</a></td>"
                        + "<td>" + val.system_created_time + "</td>"
                        + "<td>" + val.business_transaction + "</td>"
                        + "<td>" + val.channel + "</td>"

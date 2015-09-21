@@ -128,27 +128,6 @@ namespace eWallet.Backend.Controllers
         {
             IMongoQuery query = Query.EQ("created_by", User.Identity.Name.ToString());
    
-            //if (profile != null)
-            //    query = (query == null) ? Query.EQ("created_by", profile) : Query.And(
-            //        query,
-            //        Query.EQ("created_by", profile)
-            //        );
-            //if (!String.IsNullOrEmpty(status))
-            //    query = (query == null) ? Query.EQ("status", status) : Query.And(
-            //        query,
-            //        Query.EQ("status", status)
-            //        );
-            //if (created_date_from != null)
-            //    query = Query.And(
-            //        query,
-            //        Query.GTE("system_created_time", ((DateTime)created_date_from).ToString("yyyyMMddHHmmss"))
-            //        );
-            //if (created_date_to != null)
-            //    query = Query.And(
-            //        query,
-            //        Query.LTE("system_created_time", ((DateTime)created_date_to).ToString("yyyyMMddHHmmss"))
-            //        );
-
             if (page == null) page = 1;
             if (page_size == null) page_size = 25;
             long total_page = 0;
@@ -179,41 +158,22 @@ namespace eWallet.Backend.Controllers
         }
         public JsonResult JsonListTodayTransactions(int? profile,string today,string userName, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
-            IMongoQuery query = Query.NE("type", "P");
+            IMongoQuery query = null;
+
             today = System.DateTime.Now.ToString("yyyyMMdd");
             userName = User.Identity.Name.ToString();
 
-            if (today != null)
-                query = Query.And(
-                    query,
-                 Query.EQ("system_created_date", today)
-                 );
-
             if (!string.IsNullOrEmpty(userName))
-                query = Query.And(
+                query = (query == null) ? Query.EQ("created_by", userName) : Query.And(
                     query,
                     Query.EQ("created_by", userName)
                     );
-            //if (profile != null)
-            //    query = (query == null) ? Query.EQ("created_by", profile) : Query.And(
-            //        query,
-            //        Query.EQ("created_by", profile)
-            //        );
-            //if (!String.IsNullOrEmpty(status))
-            //    query = (query == null) ? Query.EQ("status", status) : Query.And(
-            //        query,
-            //        Query.EQ("status", status)
-            //        );
-            //if (created_date_from != null)
-            //    query = Query.And(
-            //        query,
-            //        Query.GTE("system_created_time", ((DateTime)created_date_from).ToString("yyyyMMddHHmmss"))
-            //        );
-            //if (created_date_to != null)
-            //    query = Query.And(
-            //        query,
-            //        Query.LTE("system_created_time", ((DateTime)created_date_to).ToString("yyyyMMddHHmmss"))
-            //        );
+
+            if (!string.IsNullOrEmpty(today))
+                query = (query == null) ? Query.EQ("system_created_date", today) : Query.And(
+                    query,
+                    Query.GTE("system_created_date", today)
+                    );
 
             if (page == null) page = 1;
             if (page_size == null) page_size = 25;
@@ -227,19 +187,19 @@ namespace eWallet.Backend.Controllers
             );
 
             var list_accounts = (from e in _list select e).Select(p => new
-             {
-                 _id = p._id,
-                 created_by = p.created_by,
-                 transaction_type = p.transaction_type,
-                 channel = p.channel,
-                 service = p.service,
-                 provider = p.provider,
-                 payment_provider = p.payment_provider,
-                 amount = p.amount,
-                 system_created_time = p.system_created_time,
-                 status = p.status
+            {
+                _id = p._id,
+                created_by = p.created_by,
+                transaction_type = p.transaction_type,
+                channel = p.channel,
+                service = p.service,
+                provider = p.provider,
+                payment_provider = p.payment_provider,
+                amount = p.amount,
+                system_created_time = p.system_created_time,
+                status = p.status
 
-             }).ToArray();
+            }).ToArray();
 
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
         }

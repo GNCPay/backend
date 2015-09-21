@@ -1,11 +1,16 @@
 ﻿@{
-    ViewBag.Title = "Search Transactions";
+    ViewBag.Title = "List Account";
 }
-
+<div class="row">
+    <ul class="breadcrumb page-header">
+        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
+        <li><a href='#'>@ViewBag.Title</a></li>
+    </ul>
+</div>
 <style>
     .filterable {
         /*margin-top: 15px;*/
-        width:1170px;
+      width: 1170px;
     }
 
         .filterable .panel-heading .pull-right {
@@ -31,17 +36,9 @@
             }
 
             .filterable .filters input[disabled]:-ms-input-placeholder {
-                color: #333;
+                color: #333;    
             }
 </style>
-
-
-<div class="row">
-    <ul class="breadcrumb page-header">
-        <li><a href='@Url.Action("Index","Home",null,null)' class="glyphicons home"><i></i> Home</a></li>
-        <li><a href='#'>@ViewBag.Title</a></li>
-    </ul>
-</div>
 <div>
     <div class="row">
         <div class="panel panel-primary filterable">
@@ -55,13 +52,9 @@
                 <thead>
                     <tr class="filters">
                         <th><input id="_id" type="text" class="form-control" placeholder="#" disabled></th>
-                        <th><input id="system_created_time" type="text" class="form-control" placeholder="Created Time" disabled></th>
+                        <th><input id="name" type="text" class="form-control" placeholder="Name" disabled></th>
                         <th><input id="profile" type="text" class="form-control" placeholder="Profile" disabled></th>
-                        <th><input id="type" type="text" class="form-control" placeholder="Type" disabled></th>
-                        <th><input id="channel" type="text" class="form-control" placeholder="Channel" disabled></th>
-                        <th><input id="service" type="text" class="form-control" placeholder="Service" disabled></th>
-                        <th><input id="provider" type="text" class="form-control" placeholder="Service Provider" disabled></th>
-                        <th><input id="payment_provider" type="text" class="form-control" placeholder="Payment Provider" disabled></th>
+                        <th><input id="system_created_time" type="text" class="form-control" placeholder="Created Time" disabled></th>
                         <th><input id="status" type="text" class="form-control" placeholder="Status" disabled></th>
                         <th><a href="#" id="SEARCH" class="form-control">Tìm</a></th>
                     </tr>
@@ -70,26 +63,20 @@
         </div>
     </div>
 </div>
-
-<div class="row">
     <table class="table table-striped table-hover " style="width:1090px;font-size:14px; text-align:left;">
         <tbody id="table_body"></tbody>
     </table>
-
-    <ul class="pagination">
-        <li>Prev</li>
-        <li>Page #n</li>
-        <li>Page #n</li>
-        <li>Page #c</li>
-        <li>Page #n</li>
-        <li>Page #n</li>
-        <li>Page #n</li>
-        <li>Page #n</li>
-        <li>Next</li>
-    </ul>
-
-
-</div>
+<ul class="pagination">
+    <li>Prev</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #c</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Page #n</li>
+    <li>Next</li>
+</ul>
 
 <script>
     $(document).ready(function () {
@@ -135,28 +122,24 @@
         });
     });
 </script>
+
 @*tim thong tin*@
 <script>
     $('#SEARCH').click(function () {
         //alert('Clicked');
-        $system_created_time = $('#system_created_time').val();
+        $name = $('#name').val();
         $profile = $('#profile').val();
-        $transaction_type = $('#type').val();
-        $channel = $('#channel').val();
-        $service = $('#service').val();
-        $provider = $('#provider').val();
-        $type = $('#type').val();
-        $payment_provider = $('#payment_provider').val();
+        $system_created_time = $('#system_created_time').val();
         $status = $('#status').val();
-        $_Id = $('#_id').val();
+        $_id = $('#_id').val();
         var page;
 
         $.ajax({
-            url: '@Url.Action("JsonResultT", "Transaction")',
+            url: '@Url.Action("JsonResultFA", "FinanceAccount")',
             contentType: 'application/json; charset=utf-8',
             type: 'GET',
             dataType: 'json',
-            data: { _id: $_Id, system_created_time: $system_created_time, profile: $profile, transaction_type: $transaction_type, channel: $channel, service: $service, provider: $provider, payment_provider: $payment_provider, type: $type, status: $status, page: page, page_size: 20 },
+            data: { _id: $_id, name: $name, profile: $profile, system_created_time: $system_created_time, status: $status, page: page, page_size: 20 },
             timeout: 30000
         })
            .success(function (result) {
@@ -173,14 +156,10 @@
                $('#table_body').html('');
                $.each(result.list, function (i, val) {
                    $strRow = "<tr>"
-                   + "<td><a href='Index/" + val._id + "'>" + val._id + "</a></td>"
+                   + "<td><a href='ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
+                   + "<td>" + val.name + "</td>"
+                   + "<td>" + val.profile + "</td>"
                    + "<td>" + val.system_created_time + "</td>"
-                   + "<td>" + val.created_by + "</td>"
-                   + "<td>" + val.transaction_type + "</td>"
-                   + "<td>" + val.channel + "</td>"
-                   + "<td>" + val.service + "</td>"
-                   + "<td>" + val.provider + "</td>"
-                   + "<td>" + val.payment_provider + "</td>"
                    + "<td>" + val.status + "</td>"
                    + "</tr>";
                    $('#table_body').append($strRow);
@@ -194,6 +173,8 @@
     })
 </script>
 
+
+
 <script>
     $(document).ready(function () {
 
@@ -201,7 +182,7 @@
 
         function loadPage(page) {
             $.ajax({
-                url: '@Url.Action("JsonListTransactions", "Transaction")',
+                url: '@Url.Action("JsonListAccounts", "FinanceAccount")',
                 contentType: 'application/json; charset=utf-8',
                 type: 'GET',
                 dataType: 'json',
@@ -222,14 +203,10 @@
                    $('#table_body').html('');
                    $.each(result.list, function (i, val) {
                        $strRow = "<tr>"
-                       + "<td><a href='Index/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td><a href='ViewAccount/" + val._id + "'>" + val._id + "</a></td>"
+                       + "<td>" + val.name + "</td>"
+                       + "<td>" + val.profile + "</td>"
                        + "<td>" + val.system_created_time + "</td>"
-                       + "<td>" + val.created_by + "</td>"
-                       + "<td>" + val.transaction_type + "</td>"
-                       + "<td>" + val.channel + "</td>"
-                       + "<td>" + val.service + "</td>"
-                       + "<td>" + val.provider + "</td>"
-                       + "<td>" + val.payment_provider + "</td>"
                        + "<td>" + val.status + "</td>"
                        + "</tr>";
                        $('#table_body').append($strRow);

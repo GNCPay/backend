@@ -51,11 +51,16 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Box/FinanceAccount_TransactionConfig.cshtml");
         }
 
+        
         [Authorize]
-        public ActionResult ListAccounts()
+        public ActionResult FinanceAccount_ListAccounts()
         {
-            return View("~/Views/Box/FinanceAccount_ListAccounts.cshtml");
+            return View("~/Views/FinanceAccount/FinanceAccount_ListAccounts.cshtml");
         }
+        //public ActionResult ListAccounts()
+        //{
+        //    return View("~/Views/Box/FinanceAccount_ListAccounts.cshtml");
+        //}
 
         public JsonResult JsonResultFA(long? _id, string name, int? profile, string system_created_time, string status, int? page, int? page_size)
         {
@@ -107,7 +112,7 @@ namespace eWallet.Backend.Controllers
         }
         public JsonResult JsonListAccounts(int? profile, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
-            IMongoQuery query = Query.NE("type", "P");
+            IMongoQuery query = null;
             if (profile != null)
                 query = Query.And(
                     query,
@@ -175,11 +180,15 @@ namespace eWallet.Backend.Controllers
         }
 
         [Authorize]
-        public ActionResult ListTransactions()
+        public ActionResult FinanceAccount_ListTransactions()
         {
-            //ViewBag.list_transactions = Helper.DataHelper.List("finance_transaction", null);
-            return View("~/Views/Box/FinanceAccount_ListTransactions.cshtml");
+            return View("~/Views/FinanceAccount/FinanceAccount_ListTransactions.cshtml");
         }
+        //public ActionResult ListTransactions()
+        //{
+        //    //ViewBag.list_transactions = Helper.DataHelper.List("finance_transaction", null);
+        //    return View("~/Views/Box/FinanceAccount_ListTransactions.cshtml");
+        //}
 
         public JsonResult JsonResultTS(string _id, string system_created_time, string business_transaction,string channel, string service,string provider, string type, string status, int? page, int? page_size )
         {

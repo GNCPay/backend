@@ -21,14 +21,21 @@
                 </button>
                 @*@Html.ActionLink("eWallet Operation", "Index", "Home", null, new { @class = "logo" })navbar-brand*@
                 <a href='@Url.Action("Index", "Home")' style="padding-bottom:-10px;">
-                    <img src='@Url.Content("~/logo.png")' />
+                    <img src='@Url.Content("~/logo.png")' style="width:110px; height:60px"/>
                 </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Customer Profile", "Index", "Profile")</li>
-                    <li>@Html.ActionLink("Billing info", "Index", "Billinginfo")</li>
-                    <li>@Html.ActionLink("Finance Accounts", "Index", "FinanceAccount")</li>
+                    <li>@Html.ActionLink("Customer Profile", "CustomerProfile_ListProfile", "Profile")</li>
+                    <li>@Html.ActionLink("Billing info", "Billing_info", "Billinginfo")</li>
+                    @*<li>@Html.ActionLink("Finance Accounts", "Index", "FinanceAccount")</li>*@
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Finance Accounts<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("List Account", "FinanceAccount_ListAccounts", "FinanceAccount")</li>
+                            <li>@Html.ActionLink("List Account Transaction", "FinanceAccount_ListTransactions", "FinanceAccount")</li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Operation <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">

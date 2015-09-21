@@ -13,14 +13,14 @@ namespace eWallet.Backend.Controllers
         
         // GET: Billinginfo
         [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
-        public ActionResult Index()
+        public ActionResult Billing_info()
         {
-            return View();
-        }      
-        public ActionResult ListBillinginfo()
-        {
-            return View("~/Views/Box/Billing_info.cshtml");
+            return View("~/Views/Billinginfo/Billing_info.cshtml");
         }
+        //public ActionResult ListBillinginfo()
+        //{
+        //    return View("~/Views/Box/Billing_info.cshtml");
+        //}
 
         public ActionResult ViewBillinginfo(string Id)
         {

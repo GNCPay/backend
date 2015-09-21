@@ -172,11 +172,14 @@ namespace eWallet.Backend.Controllers
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ListProfile()
+        //public ActionResult ListProfile()
+        //{
+        //    return View("~/Views/Box/CustomerProfile_ListProfile.cshtml");
+        //}
+        public ActionResult CustomerProfile_ListProfile()
         {
-            return View("~/Views/Box/CustomerProfile_ListProfile.cshtml");
+            return View("~/Views/Profile/CustomerProfile_ListProfile.cshtml");
         }
-
         public ActionResult ResultProfile()
         {
             return View("~/Views/Box/ResultProfile.cshtml");

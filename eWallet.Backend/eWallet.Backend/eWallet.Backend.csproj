@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,14 +45,13 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="CryptoAlgo">
-      <HintPath>..\..\..\lib\CryptoAlgo.dll</HintPath>
+      <HintPath>E:\GitHub\backend\eWallet.Backend\eWallet.Backend\bin\CryptoAlgo.dll</HintPath>
     </Reference>
     <Reference Include="eWallet.Common">
-      <HintPath>..\..\..\lib\eWallet.Common.dll</HintPath>
+      <HintPath>E:\GitHub\backend\eWallet.Backend\eWallet.Backend\bin\eWallet.Common.dll</HintPath>
     </Reference>
-    <Reference Include="eWallet.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\core\eWallet.Data\bin\Debug\eWallet.Data.dll</HintPath>
+    <Reference Include="eWallet.Data">
+      <HintPath>E:\GitHub\backend\eWallet.Backend\eWallet.Backend\bin\eWallet.Data.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -97,17 +97,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.AspNet.Identity, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\MongoDB.AspNet.Identity.dll</HintPath>
+    <Reference Include="MongoDB.AspNet.Identity">
+      <HintPath>E:\GitHub\backend\eWallet.Backend\eWallet.Backend\bin\MongoDB.AspNet.Identity.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\MongoDB.Bson.dll</HintPath>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>E:\GitHub\backend\eWallet.Backend\eWallet.Backend\bin\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\MongoDB.Driver.dll</HintPath>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>E:\GitHub\backend\eWallet.Backend\eWallet.Backend\bin\MongoDB.Driver.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -279,8 +276,6 @@
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\FinanceAccount\Index.cshtml" />
-    <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\System\Setting.cshtml" />
     <Content Include="Views\Box\Setting_CoreChannelAPI.cshtml" />
@@ -291,8 +286,6 @@
     <Content Include="Views\FinanceAccount\Setting.cshtml" />
     <Content Include="Views\Box\FinanceAccount_ChartOfAccount.cshtml" />
     <Content Include="Views\Box\FinanceAccount_TransactionConfig.cshtml" />
-    <Content Include="Views\Box\FinanceAccount_ListAccounts.cshtml" />
-    <Content Include="Views\Box\FinanceAccount_ListTransactions.cshtml" />
     <Content Include="Views\Transaction\Index.cshtml" />
     <Content Include="Views\Transaction\Today.cshtml" />
     <Content Include="Views\Operation\CashOutRequest.cshtml" />
@@ -310,6 +303,10 @@
     <Content Include="Views\Transaction\Search.cshtml" />
     <Content Include="Views\Billinginfo\Index.cshtml" />
     <Content Include="Views\Box\Billing_info.cshtml" />
+    <Content Include="Views\FinanceAccount\FinanceAccount_ListAccounts.cshtml" />
+    <Content Include="Views\FinanceAccount\FinanceAccount_ListTransactions.cshtml" />
+    <Content Include="Views\Profile\CustomerProfile_ListProfile.cshtml" />
+    <Content Include="Views\Billinginfo\Billing_info.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
