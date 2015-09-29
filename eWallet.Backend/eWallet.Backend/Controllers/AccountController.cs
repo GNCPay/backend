@@ -186,21 +186,93 @@ namespace eWallet.Backend.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if(CheckIphone(model.Mobile)==true)
                 {
-                    await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    if(CheckPhoneSupport(model.Mobile)==true)
+                    {
+                        var user = new ApplicationUser() { UserName = model.UserName };
+                        var result = await UserManager.CreateAsync(user, model.Password);
+                        if (result.Succeeded)
+                        {
+                            //add Roles to User
+                            string[] roles = new string[] { "CUSTOMER" };
+                            var roleResult = await UserManager.AddToRoleAsync(user.Id, roles[0]);
+                            await SignInAsync(user, isPersistent: false);
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            AddErrors(result);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Số điện thoại không chính xác !");
+                    }
                 }
                 else
                 {
-                    AddErrors(result);
+                    ModelState.AddModelError("", "Số điện thoại đã tồn tại!");
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+        // kiem tra sdt
+        public static bool CheckIphone(string iphone)
+        {
+            string a = iphone.Insert(0, "84");
+            a = a.Remove(2, 1);
+            dynamic profile = Helper.DataHelper.Get("profile", Query.EQ("mobile", a));
+            if (profile != null)
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool CheckPhoneSupport(string phone_number)
+        {
+            const int RegionConuntryCode = 84;
+
+            if (phone_number.Length == 10)
+            {
+                if (phone_number.StartsWith("+"))
+                {
+                    phone_number = phone_number.Replace("+", "0");
+                }
+
+                if (phone_number.StartsWith("0" + RegionConuntryCode))
+                {
+                    phone_number = phone_number.Replace("0" + RegionConuntryCode, "0");
+                }
+                string[] networkSupport_2 = { "096", "097", "098", "090", "093", "091", "094", "092", "099" };
+                const int networkLength = 3;
+                var startphone_number = phone_number.Substring(0, networkLength);
+                return networkSupport_2.Any(startphone_number.Equals);
+
+            }
+            if (phone_number.Length == 11)
+            {
+                if (phone_number.StartsWith("+"))
+                {
+                    phone_number = phone_number.Replace("+", "0");
+                }
+
+                if (phone_number.StartsWith("0" + RegionConuntryCode))
+                {
+                    phone_number = phone_number.Replace("0" + RegionConuntryCode, "0");
+                }
+
+                string[] networkSupport_1 = {"0162", "0163", "0164", "0165", "0166", "0167", "0168", "0169",
+            "0120", "0121", "0122","0126","0128",
+            "0123","0124","0125","0127","0129",
+            "0188", "0186",
+            "0199"};
+                const int networkLength_2 = 4;
+                var startphone_number_2 = phone_number.Substring(0, networkLength_2);
+                return networkSupport_1.Any(startphone_number_2.Equals);
+            }
+            return false;
         }
 
         //
@@ -253,7 +325,8 @@ namespace eWallet.Backend.Controllers
                     IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
+                        TempData["alertMessage"] = "Mat khau thay doi thanh cong !";
+                        return RedirectToAction("Manage");
                     }
                     else
                     {
