@@ -16,7 +16,7 @@ namespace eWallet.Backend.Controllers
             else return View();
         }
         
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult SettingCoreChannelAPI()
         {
             //List Channel Here
@@ -24,7 +24,7 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Box/Setting_CoreChannelAPI.cshtml");
         }
         
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult SettingPartnerChannelAPI()
         {
             //List Channel Here

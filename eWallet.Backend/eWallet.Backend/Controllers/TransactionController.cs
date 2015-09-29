@@ -21,12 +21,12 @@ namespace eWallet.Backend.Controllers
             ViewBag.Title = "Chi tiết giao dịch";
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
-        [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
+        [Authorize(Roles = "GNC, CUSTOMER, SYSTEM, MERCHANT")]
         public ActionResult Search()
         {
             return View();
         }
-        [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
+        [Authorize(Roles = "GNC, CUSTOMER, SYSTEM, MERCHANT")]
         public ActionResult Today()
         {
             return View();
@@ -101,7 +101,7 @@ namespace eWallet.Backend.Controllers
             long total_page = 0;
             var _list = Helper.DataHelper.ListPagging("transactions",
             query,
-            SortBy.Ascending("_id"),
+            SortBy.Descending("system_created_date"),
             (int)page_size,
             (int)page,
             out total_page
@@ -133,7 +133,7 @@ namespace eWallet.Backend.Controllers
             long total_page = 0;
             var _list = Helper.DataHelper.ListPagging("transactions",
             query,
-            SortBy.Ascending("_id"),
+            SortBy.Ascending("system_created_time"),
             (int)page_size,
             (int)page,
             out total_page
@@ -180,7 +180,7 @@ namespace eWallet.Backend.Controllers
             long total_page = 0;
             var _list = Helper.DataHelper.ListPagging("transactions",
             query,
-            SortBy.Ascending("_id"),
+            SortBy.Ascending("system_created_time"),
             (int)page_size,
             (int)page,
             out total_page

@@ -10,9 +10,9 @@ namespace eWallet.Backend.Controllers
 {
     public class BillinginfoController : Controller
     {
-        
+
         // GET: Billinginfo
-        [Authorize(Roles = "GNC, CUSTOMER, SysCoreAdmin, User")]
+        [Authorize(Roles = "SYSTEM, MERCHANT, GNC, CUSTOMER")]
         public ActionResult Billing_info()
         {
             return View("~/Views/Billinginfo/Billing_info.cshtml");

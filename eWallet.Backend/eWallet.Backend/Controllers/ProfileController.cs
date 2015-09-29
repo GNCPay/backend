@@ -170,7 +170,7 @@ namespace eWallet.Backend.Controllers
         //{
         //    return View("~/Views/Box/CustomerProfile_ListProfile.cshtml");
         //}
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult CustomerProfile_ListProfile()
         {
             return View("~/Views/Profile/CustomerProfile_ListProfile.cshtml");

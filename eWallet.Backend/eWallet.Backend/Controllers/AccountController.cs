@@ -28,7 +28,7 @@ namespace eWallet.Backend.Controllers
             return View();
         }
 
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult AccountManagement()
         {
             //List Channel Here
@@ -99,7 +99,7 @@ namespace eWallet.Backend.Controllers
             return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
         }
 
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult RoleManagement()
         {
             //List Channel Here
@@ -134,30 +134,37 @@ namespace eWallet.Backend.Controllers
         //
         // POST: /Account/Login
         [HttpPost]
+        //[Authorize(Roles = "SYSTEM, MERCHANT, GNC, CUSTOMER")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             dynamic profile = Helper.DataHelper.Get("users", Query.EQ("UserName", model.UserName));
-            if (profile.Status != "lock")
+
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var user = await UserManager.FindAsync(model.UserName, model.Password);
+                if (user != null)
                 {
-                    var user = await UserManager.FindAsync(model.UserName, model.Password);
-                    if (user != null)
+                    if(user.Roles[0]== "SYSTEM" || user.Roles[0] == "MERCHANT" || user.Roles[0] == "GNC" || user.Roles[0] == "CUSTOMER")
                     {
-                        await SignInAsync(user, model.RememberMe);
-                        return RedirectToLocal(returnUrl);
+                        if (profile.Status != "LOCKED")
+                        {
+                            await SignInAsync(user, model.RememberMe);
+                            return RedirectToLocal(returnUrl);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "tài khoản của bạn đang bị khóa vui lòng liên hệ admin để được hỗ trợ !");
+                        }
                     }
                     else
-                    {
-                        ModelState.AddModelError("", "Invalid username or password.");
-                    }
+                        ModelState.AddModelError("", "tài khoản của bạn không thể đăng nhâp vui lòng liên hệ admin để được hỗ trợ !");
                 }
-            }
-            else
-            ModelState.AddModelError("", "tài khoản của bạn đang bị khóa vui lòng liên hệ admin để được hỗ trợ !");
-           
+                else
+                    ModelState.AddModelError("", "Invalid username or password.");
+            }           
+
             // If we got this far, something failed, redisplay form
             return View(model);
         }

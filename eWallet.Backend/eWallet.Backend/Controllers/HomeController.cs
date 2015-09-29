@@ -8,6 +8,8 @@ namespace eWallet.Backend.Controllers
 {
     public class HomeController : Controller
     {
+        //[Authorize(Roles = "GNC, CUSTOMER, SYSTEM, MERCHANT")]
+        [Authorize]
         public ActionResult Index()
         {
             return View();

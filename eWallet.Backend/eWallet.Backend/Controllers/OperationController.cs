@@ -19,7 +19,7 @@ namespace eWallet.Backend.Controllers
             return View();
         }
 
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult CashOutRequest(string Id)
         {
             if (String.IsNullOrEmpty(Id))
@@ -29,7 +29,7 @@ namespace eWallet.Backend.Controllers
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
 
-        [Authorize(Roles = "SysCoreAdmin")]
+        [Authorize(Roles = "SYSTEM")]
         public ActionResult CashInRequest(string Id)
         {
             if (String.IsNullOrEmpty(Id))
