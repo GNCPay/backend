@@ -133,7 +133,7 @@ namespace eWallet.Backend.Controllers
             long total_page = 0;
             var _list = Helper.DataHelper.ListPagging("transactions",
             query,
-            SortBy.Ascending("system_created_time"),
+            SortBy.Descending("system_created_time"),
             (int)page_size,
             (int)page,
             out total_page
@@ -180,7 +180,7 @@ namespace eWallet.Backend.Controllers
             long total_page = 0;
             var _list = Helper.DataHelper.ListPagging("transactions",
             query,
-            SortBy.Ascending("system_created_time"),
+            SortBy.Descending("system_created_time"),
             (int)page_size,
             (int)page,
             out total_page

@@ -73,7 +73,7 @@ namespace eWallet.Backend.Controllers
             long total_page = 0;
             var _list = Helper.DataHelper.ListPagging("billing_info",
                 query,
-                SortBy.Ascending("_id"),
+                SortBy.Descending("_id"),
                 (int)page_size,
                 (int)page,
                 out total_page
