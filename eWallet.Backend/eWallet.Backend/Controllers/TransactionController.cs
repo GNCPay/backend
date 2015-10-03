@@ -21,12 +21,12 @@ namespace eWallet.Backend.Controllers
             ViewBag.Title = "Chi tiết giao dịch";
             return View("~/Views/Report/Detail.cshtml", transaction);
         }
-        [Authorize(Roles = "GNC, CUSTOMER, SYSTEM, MERCHANT")]
+        [Authorize(Roles = "GNC, SYSTEM, MERCHANT")]
         public ActionResult Search()
         {
             return View();
         }
-        [Authorize(Roles = "GNC, CUSTOMER, SYSTEM, MERCHANT")]
+        [Authorize(Roles = "GNC, SYSTEM, MERCHANT")]
         public ActionResult Today()
         {
             return View();
@@ -80,11 +80,12 @@ namespace eWallet.Backend.Controllers
                     );
             }
 
-            if (!string.IsNullOrEmpty(User.Identity.Name.ToString()))
-                query = (query == null) ? Query.EQ("created_by", User.Identity.Name.ToString()) : Query.And(
-                    query,
-                    Query.EQ("created_by", User.Identity.Name.ToString())
-                    );
+            //if (!string.IsNullOrEmpty(User.Identity.Name.ToString()))
+            //    query = (query == null) ? Query.EQ("created_by", User.Identity.Name.ToString()) : Query.And(
+            //        query,
+            //        Query.EQ("created_by", User.Identity.Name.ToString())
+            //        );
+
             if (!String.IsNullOrEmpty(status))
                 query = (query == null) ? Query.EQ("status", status) : Query.And(
                     query,
@@ -126,8 +127,11 @@ namespace eWallet.Backend.Controllers
         }
         public JsonResult JsonListTransactions(int? profile, string today, string status, DateTime? created_date_from, DateTime? created_date_to, int? page, int? page_size)
         {
-            IMongoQuery query = Query.EQ("created_by", User.Identity.Name.ToString());
-   
+            //IMongoQuery query = Query.EQ("created_by", User.Identity.Name.ToString());
+
+            IMongoQuery query = null;
+
+
             if (page == null) page = 1;
             if (page_size == null) page_size = 25;
             long total_page = 0;
@@ -161,13 +165,13 @@ namespace eWallet.Backend.Controllers
             IMongoQuery query = null;
 
             today = System.DateTime.Now.ToString("yyyyMMdd");
-            userName = User.Identity.Name.ToString();
+            //userName = User.Identity.Name.ToString();
 
-            if (!string.IsNullOrEmpty(userName))
-                query = (query == null) ? Query.EQ("created_by", userName) : Query.And(
-                    query,
-                    Query.EQ("created_by", userName)
-                    );
+            //if (!string.IsNullOrEmpty(userName))
+            //    query = (query == null) ? Query.EQ("created_by", userName) : Query.And(
+            //        query,
+            //        Query.EQ("created_by", userName)
+            //        );
 
             if (!string.IsNullOrEmpty(today))
                 query = (query == null) ? Query.EQ("system_created_date", today) : Query.And(

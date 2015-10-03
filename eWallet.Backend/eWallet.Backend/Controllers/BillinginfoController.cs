@@ -12,7 +12,7 @@ namespace eWallet.Backend.Controllers
     {
 
         // GET: Billinginfo
-        [Authorize(Roles = "SYSTEM, MERCHANT, GNC, CUSTOMER")]
+        [Authorize(Roles = "SYSTEM, MERCHANT, GNC")]
         public ActionResult Billing_info()
         {
             return View("~/Views/Billinginfo/Billing_info.cshtml");

@@ -146,7 +146,7 @@ namespace eWallet.Backend.Controllers
                 var user = await UserManager.FindAsync(model.UserName, model.Password);
                 if (user != null)
                 {
-                    if(user.Roles[0]== "SYSTEM" || user.Roles[0] == "MERCHANT" || user.Roles[0] == "GNC" || user.Roles[0] == "CUSTOMER")
+                    if(user.Roles[0]== "SYSTEM" || user.Roles[0] == "MERCHANT" || user.Roles[0] == "GNC")
                     {
                         if (profile.Status != "LOCKED")
                         {
