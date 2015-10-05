@@ -185,6 +185,7 @@
     <Compile Include="Controllers\BillinginfoController.cs" />
     <Compile Include="Controllers\FinanceAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Notification_MessageController.cs" />
     <Compile Include="Controllers\OperationController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -310,6 +311,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Notification_Message\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

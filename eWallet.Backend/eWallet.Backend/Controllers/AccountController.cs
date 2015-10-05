@@ -15,6 +15,8 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson;
 using System.Collections;
+using System.IO;
+using System.Text;
 
 namespace eWallet.Backend.Controllers
 {
@@ -60,6 +62,34 @@ namespace eWallet.Backend.Controllers
             Helper.DataHelper.SaveUpdate("users", user);
             return Json(new { error_code = "00", error_message = "cập nhật phân quyền thành công!" }, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult UserNameResult(string Username, int? page, int? page_size)
+        {
+            IMongoQuery query = null;
+            if (!String.IsNullOrEmpty(Username))
+                query = (query == null) ? Query.EQ("UserName", Username.ToLower()) : Query.And(
+                    query,
+                    Query.EQ("UserName", Username.ToLower())
+                    );
+            if (page == null) page = 1;
+            if (page_size == null) page_size = 25;
+            long total_page = 0;
+            var _list = Helper.DataHelper.ListPagging("users",
+                query,
+                SortBy.Descending("_id"),
+                (int)page_size,
+                (int)page,
+                out total_page
+                );
+            var list_accounts = (from e in _list select e).Select(p => new
+            {
+                _id = p._id.ToString(),
+                UserName = p.UserName,
+                Roles = p.Roles,
+                Status = p.Status
+            }).ToArray();     
+            return Json(new { total = total_page, list = list_accounts }, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult RolesResult(Int64? _id, string UserName, string Roles, string Organization_code, int? page, int? page_size)
         {
             IMongoQuery query = null;

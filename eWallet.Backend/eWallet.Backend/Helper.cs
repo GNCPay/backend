@@ -1,6 +1,8 @@
-﻿using System;
+﻿using eWallet.Data;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -24,6 +26,7 @@ namespace eWallet.Backend
                 ConfigurationSettings.AppSettings["CoreDB_Database"]
                 );
         }
+
         public static string RequestToServer(string request)
         {
             string response = @"{error_code:'96',error_message:'Có lỗi trong quá trình xử lý. Vui lòng thử lại sau'}";

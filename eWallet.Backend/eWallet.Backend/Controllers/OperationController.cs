@@ -41,9 +41,7 @@ namespace eWallet.Backend.Controllers
 
         public JsonResult JsonConfirmRequest(string request_id, string type, string note)
         {
-           
-
-            //doan nay tuy tung the loai ma thuc hien
+        //doan nay tuy tung the loai ma thuc hien
             string request_server = @"{system:'web_frontend', module:'transaction',type:'two_way',function:'operation_confirm',request:{user_id:'" + User.Identity.Name
                + "',confirm_type:'" + type + "',confirm_note:'" + note + "', request_id:'" + request_id + "'}}";
             dynamic result = JObject.Parse(Helper.RequestToServer(request_server));

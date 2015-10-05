@@ -1,96 +1,148 @@
 ﻿@{
     Layout = null;
 }
-<h3>User Management</h3>
-<table class="table table-striped table-hover ">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>User Name</th>
-            <th>Roles</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="table_body"></tbody>
-</table>
-<ul class="pagination">
-    <li>Prev</li>
-    <li>Page #n</li>
-    <li>Page #n</li>
-    <li>Page #c</li>
-    <li>Page #n</li>
-    <li>Page #n</li>
-    <li>Page #n</li>
-    <li>Page #n</li>
-    <li>Next</li>
-</ul>
-@*cập nhật phân quyền*@
-<div id="confirmModal" class="modal fade">
-    <div id="bank-overlay" class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Cập Nhập Phân Quyền User !</h4>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="request_id" hidden />
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label for="confirm-type" class="col-sm-3 control-label">Phân quyền User</label>
-                        <div class="col-sm-9">
-                            <select id="confirm-type" class="form-control">
-                                <option value="SYSTEM">SYSTEMR USERS</option>
-                                <option value="MERCHANT">MERCHANT USERS</option>
-                                <option value="GNC">GNC USERS</option>
-                                <option value="CUSTOMER">CUSTOMER USERS</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-9">
-                            <button type="button" id="btn-confirm" class="btn btn-primary">Cập nhật !</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@*block*@
-<div id="confirmModal2" class="modal fade">
-    <div id="bank-overlay" class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Cập Nhập Khóa User !</h4>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="request_id2"  hidden/>
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label for="confirm-type" class="col-sm-3 control-label">Khóa User</label>
-                        <div class="col-sm-9">
-                            <select id="confirm-type2" class="form-control">
-                                <option value="ACTIVED">Mở Khóa</option>
-                                <option value="LOCKED">Khóa</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-9">
-                            <button type="button" id="btn-confirm2" class="btn btn-primary">Cập nhật !</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+    #custom-search-input{
+    padding: 0px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+    margin-bottom:20px;
+}
 
-<script>
-    $(document).ready(function () {
-        loadPage(0);
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+        #custom-search-input .glyphicon-search {
+            font-size: 23px;
+        }
+</style>
+<h3>User Management</h3>
+            <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                    <input type="text" id="Username" class="form-control input-lg" placeholder="Nhập Username cần tìm ..." onkeydown="if (event.keyCode == 13) document.getElementById('SEARCH').click()"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" id="SEARCH" type="button">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>User Name</th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="table_body"></tbody>
+    </table>
+    <ul class="pagination">
+        <li>Prev</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #c</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Page #n</li>
+        <li>Next</li>
+    </ul>
+    @*cập nhật phân quyền*@
+    <div id="confirmModal" class="modal fade">
+        <div id="bank-overlay" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Cập Nhập Phân Quyền User !</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="request_id" hidden />
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="confirm-type" class="col-sm-3 control-label">Phân quyền User</label>
+                            <div class="col-sm-9">
+                                <select id="confirm-type" class="form-control">
+                                    <option value="SYSTEM">SYSTEMR USERS</option>
+                                    <option value="MERCHANT">MERCHANT USERS</option>
+                                    <option value="GNC">GNC USERS</option>
+                                    <option value="CUSTOMER">CUSTOMER USERS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button type="button" id="btn-confirm" class="btn btn-primary">Cập nhật !</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*block*@
+    <div id="confirmModal2" class="modal fade">
+        <div id="bank-overlay" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Cập Nhập Khóa User !</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="request_id2" hidden />
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="confirm-type" class="col-sm-3 control-label">Khóa User</label>
+                            <div class="col-sm-9">
+                                <select id="confirm-type2" class="form-control">
+                                    <option value="ACTIVED">Mở Khóa</option>
+                                    <option value="LOCKED">Khóa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button type="button" id="btn-confirm2" class="btn btn-primary">Cập nhật !</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    function submitOnEnter(inputElement, event) {
+        if (event.keyCode == 13) { // No need to do browser specific checks. It is always 13.
+            inputElement.form.submit();
+        }
+    }
+</script>
+
+    @*tim thong tin*@
+    <script>
+
         //update phân quyền
         $('#btn-confirm').click(function () {
             $.ajax({
@@ -132,14 +184,18 @@
             alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
         });
         });
-       
-        function loadPage(page) {
+
+        $('#SEARCH').click(function () {
+            //alert('Clicked');
+            $Username = $('#Username').val();
+            var page;
+
             $.ajax({
-                url: '@Url.Action("RolesResult", "Account")',
+                url: '@Url.Action("UserNameResult", "Account")',
                 contentType: 'application/json; charset=utf-8',
                 type: 'GET',
                 dataType: 'json',
-                data: { page: page, page_size: 20 },
+                data: { Username: $Username, page: page, page_size: 20 },
                 timeout: 30000
             })
                .success(function (result) {
@@ -179,7 +235,103 @@
             NProgress.done();
             alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
         });
-        }
-    })
-</script>
+
+        })
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            loadPage(0);
+            //update phân quyền
+            $('#btn-confirm').click(function () {
+                $.ajax({
+                    url: '@Url.Action("UpdateRoles", "Account")',
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { _id: $('#request_id').val(), Roles: $('#confirm-type').val() },
+                    timeout: 30000
+                })
+                   .success(function (result) {
+                       alert(result.error_message);
+                       $('#confirmModal').modal('hide');
+                       location.reload();
+                   })
+            .error(function (xhr, status) {
+                NProgress.done();
+                alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+            });
+            });
+
+            //update khóa user
+            $('#btn-confirm2').click(function () {
+                $.ajax({
+                    url: '@Url.Action("UpdateStatus", "Account")',
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { _id: $('#request_id2').val(), Status: $('#confirm-type2').val() },
+                    timeout: 30000
+                })
+                   .success(function (result) {
+                       alert(result.error_message);
+                       $('#confirmModal').modal('hide');
+                       location.reload();
+                   })
+            .error(function (xhr, status) {
+                NProgress.done();
+                alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+            });
+            });
+
+            function loadPage(page) {
+                $.ajax({
+                    url: '@Url.Action("RolesResult", "Account")',
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { page: page, page_size: 20 },
+                    timeout: 30000
+                })
+                   .success(function (result) {
+                       if (page == 0) {
+                           $(".pagination").easyPaging(result.total, { // make 1337 elements navigatable
+                               perpage: 20, // show 10 elements per page
+                               lapping: 0, // don't overlap pages for the moment
+                               page: 1, // start at page, can also be "null" or negative
+                               onSelect: function (next_page) {
+                                   loadPage(next_page);
+                               }
+                           });
+                       }
+                       $('#table_body').html('');
+                       $.each(result.list, function (i, val) {
+                           $action = "";
+                           $action = "<a href='#confirmModal' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-edit' data-request='" + val._id + "'></a>";
+                           $action2 = "<a href='#confirmModal2' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-remove' data-request='" + val._id + "'></a>";
+                           $strRow = "<tr>"
+                           + "<td>" + val._id + "</td>"
+                           + "<td>" + val.UserName + "</td>"
+                           + "<td>" + val.Roles + "</td>"
+                           + "<td>" + val.Status + "</td>"
+                           + "<td>" + $action + "&nbsp &nbsp" + $action2 + "</td>"
+                           + "</tr>";
+                           $('#table_body').append($strRow);
+                       });
+
+                       $('.confirm-btn').click(function () {
+                           $('#request_id').val($(this).data("request"));
+                       })
+                       $('.confirm-btn').click(function () {
+                           $('#request_id2').val($(this).data("request"));
+                       })
+                   })
+            .error(function (xhr, status) {
+                NProgress.done();
+                alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+            });
+            }
+        })
+    </script>
 
