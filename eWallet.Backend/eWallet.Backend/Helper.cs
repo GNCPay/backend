@@ -1,4 +1,8 @@
-﻿using eWallet.Data;
+﻿using eWallet.Backend.Models;
+using eWallet.Data;
+using Microsoft.AspNet.Identity;
+using MongoDB.AspNet.Identity;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,9 +22,10 @@ namespace eWallet.Backend
         /// Object kết nối và xử lý với database
         /// </summary>
         public static eWallet.Data.MongoHelper DataHelper;
+        public static UserManager<ApplicationUser> UserManager { get; private set; }
         private static CoreAPI.ChannelAPIClient client = new CoreAPI.ChannelAPIClient();
-        public static void Init()
-        {
+       public static void Init()
+       {
             DataHelper = new Data.MongoHelper(
                 ConfigurationSettings.AppSettings["CoreDB_Server"],
                 ConfigurationSettings.AppSettings["CoreDB_Database"]

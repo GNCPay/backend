@@ -17,6 +17,8 @@ using MongoDB.Bson;
 using System.Collections;
 using System.IO;
 using System.Text;
+using System.Web.Security;
+using System.Security.Cryptography;
 
 namespace eWallet.Backend.Controllers
 {
@@ -51,6 +53,110 @@ namespace eWallet.Backend.Controllers
             var id = new ObjectId(_id);
             dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
             user.Status = Status;
+            Helper.DataHelper.SaveUpdate("users", user);
+            return Json(new { error_code = "00", error_message = "cập nhật trạng thái thành công !" }, JsonRequestBehavior.AllowGet);
+        }
+
+      public enum Supported_HA
+      {
+          SHA256,  SHA384,
+          SHA512
+      }
+        class Hashing
+        {
+            public static string ComputeHash(string plaintext, Supported_HA hash, byte[] salt)
+            {
+                int minSaltLength = 4;
+                int maxSaltLenght = 6;
+                byte[] SaltBytes = null;
+
+                if(salt!=null)
+                {
+                    SaltBytes = salt;
+                }
+                else
+                {
+                    Random r = new Random();
+                    int SaltLenght = r.Next(minSaltLength, maxSaltLenght);
+                    SaltBytes = new byte[SaltLenght];
+                    RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                    rng.GetNonZeroBytes(SaltBytes);
+                    rng.Dispose();
+                }
+
+                byte[] plaintData = ASCIIEncoding.UTF8.GetBytes(plaintext);
+                byte[] plainDataAndSalt = new byte[plaintData.Length + SaltBytes.Length];
+
+                for(int x=0; x<plaintData.Length;x++)
+                {
+                    plainDataAndSalt[x] = plaintData[x];
+                    
+                }
+                for (int n = 0; n < SaltBytes.Length; n++)
+                    plainDataAndSalt[plaintData.Length + n] = SaltBytes[n];
+
+                byte[] hashValue = null;
+
+                switch(hash)
+                {
+                    case Supported_HA.SHA256:
+                        SHA256Managed sha= new SHA256Managed();
+                        hashValue= sha.ComputeHash(plainDataAndSalt);
+                        sha.Dispose();
+                        break;
+
+                    case Supported_HA.SHA384:
+                        SHA384Managed sha1 = new SHA384Managed();
+                        hashValue = sha1.ComputeHash(plainDataAndSalt);
+                        sha1.Dispose();
+                        break;
+                    case Supported_HA.SHA512:
+                        SHA512Managed sha2 = new SHA512Managed();
+                        hashValue = sha2.ComputeHash(plainDataAndSalt);
+                        sha2.Dispose();
+                        break;
+                }
+
+                byte[] resuflt = new byte[hashValue.Length + SaltBytes.Length];
+                for (int x = 0; x < hashValue.Length; x++)
+                    resuflt[x] = hashValue[x];
+                for (int n = 0; n < SaltBytes.Length; n++)
+                    resuflt[hashValue.Length + n] = SaltBytes[n];
+                return Convert.ToBase64String(resuflt);
+            }
+
+            public static bool Confirm(string plainText, string hashValue, Supported_HA hash)
+            {
+                byte[] hashBytes = Convert.FromBase64String(hashValue);
+                int hashSize = 0;
+                switch(hash)
+                {
+                    case Supported_HA.SHA256:
+                        hashSize = 32;
+                        break;
+                    case Supported_HA.SHA384:
+                        hashSize = 48;
+                        break;
+                    case Supported_HA.SHA512:
+                        hashSize = 64;
+                        break;
+                }
+                byte[] saltBytes = new byte[hashBytes.Length - hashSize];
+                for (int x = 0; x < saltBytes.Length; x++)
+                    saltBytes[x] = hashBytes[hashSize + x];
+                string NewHash = ComputeHash(plainText, hash, saltBytes);
+
+                return (hashValue == NewHash);
+            }
+        }
+        public JsonResult ResetPassWord(string _id)
+        {     
+            var id = new ObjectId(_id);           
+            dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
+            string passwordnew="123456";
+            string passwordold=user.PasswordHash;
+            string hasspassnew = UserManager.PasswordHasher.HashPassword(passwordnew);
+            user.PasswordHash = hasspassnew;
             Helper.DataHelper.SaveUpdate("users", user);
             return Json(new { error_code = "00", error_message = "cập nhật trạng thái thành công !" }, JsonRequestBehavior.AllowGet);
         }
@@ -470,26 +576,41 @@ namespace eWallet.Backend.Controllers
 
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
+                if (CheckIphone(model.Mobile) == true)
                 {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new ApplicationUser() { UserName = model.UserName };
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
+                    if (CheckPhoneSupport(model.Mobile) == true)
                     {
-                        await SignInAsync(user, isPersistent: false);
-                        return RedirectToLocal(returnUrl);
+                        var info = await AuthenticationManager.GetExternalLoginInfoAsync();
+                        if (info == null)
+                        {
+                            return View("ExternalLoginFailure");
+                        }
+                        var user = new ApplicationUser() { UserName = model.UserName };
+                        var result = await UserManager.CreateAsync(user);
+                        if (result.Succeeded)
+                        {
+                            result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                            if (result.Succeeded)
+                            {
+                                string[] roles = new string[] { "CUSTOMER" };
+                                var roleResult = await UserManager.AddToRoleAsync(user.Id, roles[0]);
+                                await SignInAsync(user, isPersistent: false);
+                                return RedirectToLocal(returnUrl);
+                            }
+                        }
+                        AddErrors(result);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Số điện thoại không chính xác !");
                     }
                 }
-                AddErrors(result);
+                else
+                {
+                    ModelState.AddModelError("", "Số điện thoại đã tồn tại!");
+                }
+                // Get the information about the user from the external login provider     
             }
-
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }

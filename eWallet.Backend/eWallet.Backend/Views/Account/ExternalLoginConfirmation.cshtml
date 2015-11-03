@@ -27,7 +27,7 @@
    <div class="form-group">
         @Html.LabelFor(m => m.Mobile, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", onkeypress = "return kaka(event, this)" })
             @Html.ValidationMessageFor(m => m.Mobile)
         </div>
     </div>
@@ -38,6 +38,14 @@
     </div>
 }
 
+<script>
+    // chỉ nhập cho nhập số for firefox
+    function kaka(e, kakatexto) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    }
+</script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

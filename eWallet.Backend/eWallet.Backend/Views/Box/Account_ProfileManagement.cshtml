@@ -132,6 +132,28 @@
         </div>
     </div>
 
+    @*ResetPass*@
+    <div id="confirmModal3" class="modal fade">
+        <div id="bank-overlay" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Reset Password User !</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="request_id3" hidden />
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button type="button" id="btn-confirm3" class="btn btn-primary">Reset Mật Khẩu !</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script type="text/javascript">
     function submitOnEnter(inputElement, event) {
         if (event.keyCode == 13) { // No need to do browser specific checks. It is always 13.
@@ -142,6 +164,27 @@
 
     @*tim thong tin*@
     <script>
+
+        //Reset mat khau
+        $('#btn-confirm3').click(function () {
+            $.ajax({
+                url: '@Url.Action("ResetPassWord", "Account")',
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET',
+                dataType: 'json',
+                data: { _id: $('#request_id3').val() },
+                timeout: 30000
+            })
+               .success(function (result) {
+                   alert(result.error_message);
+                   $('#confirmModal').modal('hide');
+                   location.reload();
+               })
+        .error(function (xhr, status) {
+            NProgress.done();
+            alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+        });
+        });
 
         //update phân quyền
         $('#btn-confirm').click(function () {
@@ -214,12 +257,13 @@
                        $action = "";
                        $action = "<a href='#confirmModal' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-edit' data-request='" + val._id + "'></a>";
                        $action2 = "<a href='#confirmModal2' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-remove' data-request='" + val._id + "'></a>";
+                       $action3 = "<a href='#confirmModal3' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-repeat' data-request='" + val._id + "'></a>";
                        $strRow = "<tr>"
                        + "<td>" + val._id + "</td>"
                        + "<td>" + val.UserName + "</td>"
                        + "<td>" + val.Roles + "</td>"
                        + "<td>" + val.Status + "</td>"
-                       + "<td>" + $action + "&nbsp &nbsp" + $action2 + "</td>"
+                       + "<td>" + $action + "&nbsp &nbsp" + $action2 + "&nbsp &nbsp" + $action3 + "</td>"
                        + "</tr>";
                        $('#table_body').append($strRow);
                    });
@@ -229,6 +273,9 @@
                    })
                    $('.confirm-btn').click(function () {
                        $('#request_id2').val($(this).data("request"));
+                   })
+                   $('.confirm-btn').click(function () {
+                       $('#request_id3').val($(this).data("request"));
                    })
                })
         .error(function (xhr, status) {
@@ -243,6 +290,27 @@
     <script>
         $(document).ready(function () {
             loadPage(0);
+            //Reset mat khau
+            $('#btn-confirm3').click(function () {
+                $.ajax({
+                    url: '@Url.Action("ResetPassWord", "Account")',
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { _id: $('#request_id3').val() },
+                    timeout: 30000
+                })
+                   .success(function (result) {
+                       alert(result.error_message);
+                       $('#confirmModal').modal('hide');
+                       location.reload();
+                   })
+            .error(function (xhr, status) {
+                NProgress.done();
+                alert("Không thể load dữ liệu. Vui lòng thử lại sau!");
+            });
+            });
+
             //update phân quyền
             $('#btn-confirm').click(function () {
                 $.ajax({
@@ -310,12 +378,13 @@
                            $action = "";
                            $action = "<a href='#confirmModal' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-edit' data-request='" + val._id + "'></a>";
                            $action2 = "<a href='#confirmModal2' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-remove' data-request='" + val._id + "'></a>";
+                           $action3 = "<a href='#confirmModal3' data-toggle='modal'  class='confirm-btn glyphicon glyphicon-repeat' data-request='" + val._id + "'></a>";
                            $strRow = "<tr>"
                            + "<td>" + val._id + "</td>"
                            + "<td>" + val.UserName + "</td>"
                            + "<td>" + val.Roles + "</td>"
                            + "<td>" + val.Status + "</td>"
-                           + "<td>" + $action + "&nbsp &nbsp" + $action2 + "</td>"
+                           + "<td>" + $action + "&nbsp &nbsp" + $action2 + "&nbsp &nbsp" + $action3 + "</td>"
                            + "</tr>";
                            $('#table_body').append($strRow);
                        });
@@ -325,6 +394,9 @@
                        })
                        $('.confirm-btn').click(function () {
                            $('#request_id2').val($(this).data("request"));
+                       })
+                       $('.confirm-btn').click(function () {
+                           $('#request_id3').val($(this).data("request"));
                        })
                    })
             .error(function (xhr, status) {
