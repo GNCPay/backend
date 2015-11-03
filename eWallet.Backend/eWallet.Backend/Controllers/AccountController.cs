@@ -154,7 +154,6 @@ namespace eWallet.Backend.Controllers
             var id = new ObjectId(_id);           
             dynamic user = Helper.DataHelper.Get("users", Query.EQ("_id", id));
             string passwordnew="123456";
-            string passwordold=user.PasswordHash;
             string hasspassnew = UserManager.PasswordHasher.HashPassword(passwordnew);
             user.PasswordHash = hasspassnew;
             Helper.DataHelper.SaveUpdate("users", user);
