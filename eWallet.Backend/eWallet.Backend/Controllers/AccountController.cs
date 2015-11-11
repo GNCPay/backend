@@ -22,7 +22,7 @@ using System.Security.Cryptography;
 
 namespace eWallet.Backend.Controllers
 {
-
+    //
     [Authorize]
     public class AccountController : Controller
     {
